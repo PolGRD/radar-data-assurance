@@ -1,0 +1,35 @@
+name: Collecte RSS quotidienne
+
+on:
+  schedule:
+    # 4 h UTC : 6 h à Paris en été, 5 h en hiver.
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      simulation:
+        description: "Simulation (n'écrit rien dans Notion)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: collecte
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: collecteur/requirements.txt
+      - run: pip install -r collecteur/requirements.txt
+      - name: Collecter
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: python collecteur/collecte.py ${{ inputs.simulation && '--simulation' || '' }}
