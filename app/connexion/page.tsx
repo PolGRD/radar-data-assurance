@@ -6,6 +6,9 @@ export const metadata: Metadata = { title: "Connexion" };
 export default async function ConnexionPage({ searchParams }: PageProps<"/connexion">) {
   const params = await searchParams;
   const erreur = params.erreur === "1";
+  const manque = params.erreur === "config" && typeof params.manque === "string"
+    ? params.manque.split(",").filter((v) => v === "SITE_PASSWORD" || v === "AUTH_SECRET")
+    : [];
   const next = safeNextPath(typeof params.next === "string" ? params.next : "/");
 
   return (
@@ -16,6 +19,11 @@ export default async function ConnexionPage({ searchParams }: PageProps<"/connex
         className="w-full max-w-sm space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
       >
         <h1 className="text-xl font-bold tracking-tight">Radar Data Assurance</h1>
+        {manque.length > 0 && (
+          <p role="alert" className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+            Configuration incomplète : {manque.join(" et ")} manque dans les variables d&apos;environnement Vercel. Ajoute-la, puis redéploie.
+          </p>
+        )}
         <input type="hidden" name="next" value={next} />
         <div className="space-y-1">
           <label htmlFor="password" className="text-sm font-medium">Mot de passe</label>

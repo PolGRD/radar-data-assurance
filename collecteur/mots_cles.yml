@@ -1,0 +1,232 @@
+# Dictionnaire de pré-classement (lot 2, fonction F4).
+#
+# Le collecteur coche un pilier ou un tag dès qu'un de ses mots-clés apparaît
+# dans le titre ou l'extrait d'un article. C'est une suggestion : on corrige au tri.
+#
+# Règles de lecture :
+# - majuscules, minuscules et accents sont ignorés ("prevoyance" = "Prévoyance") ;
+# - un mot-clé n'est reconnu que comme mot entier ("ani" ne déclenche pas "animal") ;
+# - un mot-clé écrit TOUT EN MAJUSCULES (IA, ANI, DSN...) n'est reconnu qu'en majuscules,
+#   pour éviter les faux positifs ("ia" dans un mot anglais, "ani" dans un prénom).
+# Pour désactiver tout le pré-classement : passer "actif" à false.
+
+actif: true
+
+piliers:
+  Data gouvernance:
+    - gouvernance des données
+    - data governance
+    - data management
+    - qualité des données
+    - data quality
+    - référentiel de données
+    - données de référence
+    - master data
+    - MDM
+    - lignage
+    - data lineage
+    - métadonnées
+    - metadata
+    - catalogue de données
+    - data catalog
+    - data owner
+    - data steward
+    - DAMA
+    - DMBOK
+    - CDMP
+    - BCBS 239
+  IA:
+    - intelligence artificielle
+    - artificial intelligence
+    - IA
+    - AI
+    - IA générative
+    - generative AI
+    - GenAI
+    - LLM
+    - modèle de langage
+    - apprentissage automatique
+    - machine learning
+    - deep learning
+    - agent IA
+    - agentique
+    - agentic
+    - algorithme
+    - algorithmique
+    - AI Act
+    - RIA
+    - règlement IA
+    - AI Office
+  Assurance de personnes:
+    - assurance de personnes
+    - prévoyance
+    - complémentaire santé
+    - complémentaires santé
+    - mutuelle
+    - mutuelles
+    - mutualité
+    - institution de prévoyance
+    - institutions de prévoyance
+    - protection sociale complémentaire
+    - PSC
+    - assurance santé
+    - assurance emprunteur
+    - incapacité
+    - invalidité
+    - arrêt de travail
+    - dépendance
+    - ANI
+    - loi Évin
+    - contrat responsable
+    - 100 % santé
+    - 100% santé
+    - portabilité
+    - DSN
+    - tiers payant
+    - NOEMIE
+    - contrat collectif
+    - contrats collectifs
+    - CTIP
+
+tags:
+  Réglementation:
+    - réglementation
+    - règlement
+    - directive
+    - décret
+    - arrêté
+    - ordonnance
+    - projet de loi
+    - PLFSS
+    - Journal officiel
+    - transposition
+    - AI Act
+    - DORA
+    - Solvabilité II
+    - Solvency II
+    - IRRD
+    - DDA
+    - IDD
+  Conformité & risques:
+    - conformité
+    - compliance
+    - gestion des risques
+    - risk management
+    - contrôle interne
+    - supervision
+    - superviseur
+    - ACPR
+    - EIOPA
+    - ORSA
+    - sanction
+  RGPD:
+    - RGPD
+    - GDPR
+    - données personnelles
+    - personal data
+    - données de santé
+    - health data
+    - CNIL
+    - NIR
+    - AIPD
+    - DPO
+    - HDS
+    - pseudonymisation
+    - anonymisation
+  Qualité des données:
+    - qualité des données
+    - data quality
+    - fiabilité des données
+    - complétude
+    - QRT
+  Cas d'usage:
+    - cas d'usage
+    - use case
+    - retour d'expérience
+    - REX
+    - déploiement
+  Tarification & actuariat:
+    - tarification
+    - tarif
+    - tarifs
+    - pricing
+    - actuariat
+    - actuariel
+    - actuaire
+    - provisionnement
+    - sinistralité
+  Prestations & sinistres:
+    - prestations
+    - sinistres
+    - sinistre
+    - claims
+    - remboursement
+    - indemnisation
+    - gestion des prestations
+  Souscription:
+    - souscription
+    - underwriting
+    - questionnaire médical
+    - sélection médicale
+    - adhésion
+  Relation client:
+    - relation client
+    - expérience client
+    - customer experience
+    - parcours client
+    - service client
+    - réclamation
+    - réclamations
+    - chatbot
+  Fraude:
+    - fraude
+    - fraud
+    - lutte contre la fraude
+    - blanchiment
+  Éthique & biais:
+    - éthique
+    - ethics
+    - biais
+    - bias
+    - équité
+    - fairness
+    - discrimination
+    - explicabilité
+    - explainability
+    - IA responsable
+    - responsible AI
+  Architecture & outils:
+    - architecture
+    - plateforme
+    - platform
+    - cloud
+    - data mesh
+    - data lake
+    - lakehouse
+    - data warehouse
+    - API
+    - Snowflake
+    - Databricks
+    - Collibra
+    - Informatica
+  Marché & acteurs:
+    - marché
+    - chiffre d'affaires
+    - fusion
+    - rapprochement
+    - acquisition
+    - résultats annuels
+    - baromètre
+    - classement
+    - France Assureurs
+    - Mutualité Française
+  Méthodes:
+    - méthode
+    - méthodologie
+    - framework
+    - bonnes pratiques
+    - best practices
+    - guide
+    - feuille de route
+    - roadmap
+    - maturité

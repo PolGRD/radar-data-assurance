@@ -11,6 +11,19 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 - `/veille` : fil de veille, filtres et recherche.
 - `/veille/[id]` : détail d'un élément (seuls les statuts Retenu et Lu sont visibles).
 
+## Collecteur RSS (lot 2)
+
+`collecteur/collecte.py`, lancé chaque jour à 4 h UTC par GitHub Actions (`.github/workflows/collecte.yml`) :
+
+- découvre et inscrit dans Notion le flux RSS des sources qui ont une « URL du site » mais pas de flux ;
+- pour chaque source cochée « Active », crée les articles des 7 derniers jours dans Veille au statut « À trier », sans doublon (URL normalisée) ;
+- suggère piliers et tags d'après `collecteur/mots_cles.yml` (modifiable directement sur GitHub) ;
+- met à jour « Dernière collecte » et « Erreurs consécutives ».
+
+Lancement manuel : onglet Actions du dépôt, « Collecte RSS quotidienne », « Run workflow » (case « Simulation » pour ne rien écrire). Secret requis : `NOTION_TOKEN`.
+
+Tests : `pip install -r collecteur/requirements.txt pytest && python -m pytest collecteur/tests`.
+
 ## Variables d'environnement
 
 Voir `.env.example`. À saisir dans Vercel, jamais dans le code.

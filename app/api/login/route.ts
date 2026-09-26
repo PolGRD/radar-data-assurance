@@ -6,6 +6,15 @@ export async function POST(request: NextRequest) {
   const password = String(form.get("password") ?? "");
   const next = safeNextPath(form.get("next"));
 
+  // Configuration incomplète dans Vercel : message clair plutôt qu'une erreur 500.
+  const missing = ["SITE_PASSWORD", "AUTH_SECRET"].filter((name) => !process.env[name]);
+  if (missing.length) {
+    const url = new URL("/connexion", request.url);
+    url.searchParams.set("erreur", "config");
+    url.searchParams.set("manque", missing.join(","));
+    return NextResponse.redirect(url, 303);
+  }
+
   if (!(await checkPassword(password))) {
     // Petit délai pour freiner les essais en rafale.
     await new Promise((resolve) => setTimeout(resolve, 800));
