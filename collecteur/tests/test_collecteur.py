@@ -49,3 +49,7 @@ def test_lecture_flux_rss():
     </channel></rss>"""
     [article] = lire_flux(rss)
     assert article == {"titre": "Article & test", "url": "https://ex.fr/a", "date": "2026-09-21", "extrait": "Chapo"}
+
+
+def test_entites_doublement_encodees():
+    assert extrait("le jeudi 24&amp;nbsp;septembre à 9&amp;nbsp;h&amp;nbsp;30") == "le jeudi 24 septembre à 9 h 30"

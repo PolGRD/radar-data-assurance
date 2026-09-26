@@ -44,20 +44,24 @@ class Rapport:
 
 
 def decouvrir(api: n.Notion, sources: list[dict], simulation: bool, log: Rapport):
-    a_chercher = [s for s in sources if n.lire_url(s, "URL du site") and not n.lire_url(s, "Flux RSS")]
+    # Une source marquée « Manuel » n'est plus cherchée : vider « Méthode » dans Notion pour relancer la recherche.
+    a_chercher = [
+        s for s in sources
+        if n.lire_url(s, "URL du site") and not n.lire_url(s, "Flux RSS") and n.lire_select(s, "Méthode") != "Manuel"
+    ]
     if not a_chercher:
         return
     log("## Découverte des flux RSS")
     for s in a_chercher:
         nom = n.lire_texte(s, "Nom")
-        trouve = decouvrir_flux(n.lire_url(s, "URL du site"))
+        trouve, raison = decouvrir_flux(n.lire_url(s, "URL du site"))
         if trouve:
             log(f"- {nom} : flux trouvé {trouve}")
             s["properties"]["Flux RSS"] = {"url": trouve}
             if not simulation:
                 api.modifier_page(s["id"], {"Flux RSS": n.url(trouve), "Méthode": n.select("RSS")})
         else:
-            log(f"- {nom} : aucun flux trouvé, source à suivre par le Web Clipper")
+            log(f"- {nom} : aucun flux trouvé ({raison}), source passée en « Manuel »")
             if not simulation and not n.lire_select(s, "Méthode"):
                 api.modifier_page(s["id"], {"Méthode": n.select("Manuel")})
     log()
@@ -89,7 +93,7 @@ def collecter(api: n.Notion, sources: list[dict], simulation: bool, log: Rapport
                 api.modifier_page(s["id"], {"Erreurs consécutives": n.nombre(erreurs)})
             continue
 
-        crees = 0
+        crees, lignes = 0, []
         for a in articles:
             cle = normaliser_url(a["url"])
             if cle in deja_vues or (a["date"] and a["date"] < limite):
@@ -99,7 +103,7 @@ def collecter(api: n.Notion, sources: list[dict], simulation: bool, log: Rapport
             piliers, tags = classeur.classer(a["titre"], a["extrait"])
             deja_vues.add(cle)
             crees += 1
-            log(f"  - {a['titre']}" + (f" [{', '.join(piliers + tags)}]" if piliers or tags else ""))
+            lignes.append(f"  - {a['titre']}" + (f" [{', '.join(piliers + tags)}]" if piliers or tags else ""))
             if not simulation:
                 api.creer_page(VEILLE, {
                     "Titre": n.titre(a["titre"]),
@@ -113,6 +117,8 @@ def collecter(api: n.Notion, sources: list[dict], simulation: bool, log: Rapport
                 })
         total += crees
         log(f"- **{nom}** : {crees} nouvel(s) article(s) sur {len(articles)} dans le flux")
+        for ligne in lignes:
+            log(ligne)
         if not simulation:
             api.modifier_page(s["id"], {
                 "Dernière collecte": n.date(maintenant),
