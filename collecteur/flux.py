@@ -11,8 +11,15 @@ from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit, urlunsplit
 import feedparser
 import requests
 
-USER_AGENT = "RadarDataAssurance/1.0 (veille personnelle; +https://radar-data-assurance.vercel.app)"
-TIMEOUT = 20
+# Beaucoup de sites refusent les robots mal identifiés : on se présente comme un navigateur,
+# en gardant le nom du collecteur pour rester identifiable.
+ENTETES = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/130.0 Safari/537.36 RadarDataAssurance/1.0",
+    "Accept": "text/html,application/xhtml+xml,application/rss+xml,application/atom+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+}
+TIMEOUT = 15
 EXTRAIT_MAX = 300
 
 # Paramètres de suivi retirés avant comparaison des URL.
@@ -37,15 +44,21 @@ def normaliser_url(url: str) -> str:
 
 
 def telecharger(url: str) -> requests.Response:
-    reponse = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=TIMEOUT)
+    reponse = requests.get(url, headers=ENTETES, timeout=TIMEOUT)
     reponse.raise_for_status()
     return reponse
 
 
 def _nettoyer(texte: str) -> str:
-    texte = re.sub(r"<[^>]+>", " ", texte or "")
-    texte = re.sub(r"\s+", " ", html.unescape(texte)).strip()
-    return texte
+    texte = texte or ""
+    # Certains flux encodent deux fois les entités (« &amp;nbsp; ») : on décode jusqu'à stabilité.
+    for _ in range(3):
+        decode = html.unescape(texte)
+        if decode == texte:
+            break
+        texte = decode
+    texte = re.sub(r"<[^>]+>", " ", texte)
+    return re.sub(r"\s+", " ", texte).strip()
 
 
 def extrait(texte: str, limite: int = EXTRAIT_MAX) -> str:
@@ -103,16 +116,21 @@ def _est_un_flux(url: str) -> bool:
         return False
 
 
-def decouvrir_flux(url_site: str) -> str | None:
-    """Cherche le flux RSS d'un site : balises <link> de la page d'accueil, puis chemins courants."""
+def decouvrir_flux(url_site: str) -> tuple[str | None, str]:
+    """Cherche le flux RSS d'un site : balises <link> de la page d'accueil, puis chemins courants.
+
+    Renvoie (flux trouvé ou None, explication en cas d'échec)."""
     candidats: list[str] = []
+    raison = "aucun flux déclaré ni à une adresse habituelle"
     try:
         page = telecharger(url_site)
         analyseur = _LiensFlux()
         analyseur.feed(page.text)
         candidats += [urljoin(page.url, lien) for lien in analyseur.liens]
-    except Exception:
-        pass
+    except requests.HTTPError as exc:
+        raison = f"le site refuse l'accès (erreur {exc.response.status_code})"
+    except Exception as exc:
+        raison = f"site injoignable ({exc.__class__.__name__})"
     base = "{0.scheme}://{0.netloc}".format(urlsplit(url_site))
     candidats += [base + chemin for chemin in CHEMINS_COURANTS]
     vus = set()
@@ -121,5 +139,5 @@ def decouvrir_flux(url_site: str) -> str | None:
             continue
         vus.add(candidat)
         if _est_un_flux(candidat):
-            return candidat
-    return None
+            return candidat, ""
+    return None, raison
