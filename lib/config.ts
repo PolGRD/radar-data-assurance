@@ -5,6 +5,8 @@ export const DATA_SOURCES = {
   fiches: "795a44e4-0363-4b82-8698-dae7a446211c",
   echeances: "4f13f344-aea7-4a81-aba6-f5a14b21e09b",
   parcours: "d93b2f61-5c7d-4cf1-8943-012d5a2445dd",
+  impacts: "64eabb90-48fe-4ad4-ac2d-97b2b85b7bb5",
+  regles: "a2a82ac9-b5cc-4c91-948b-16279dde5ee4",
 } as const;
 
 // Seuls ces statuts sont visibles sur le site.

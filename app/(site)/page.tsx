@@ -110,14 +110,14 @@ export default async function TableauDeBord() {
           ) : <Empty>Aucun favori ni élément de pertinence 5 pour l&apos;instant.</Empty>}
         </Panel>
 
-        <Panel title="Prochaines échéances">
+        <Panel title="Prochaines échéances" action={<Link href="/calendrier" className="text-sm underline">Voir la frise</Link>}>
           {prochaines.length ? (
             <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {prochaines.map((e) => (
                 <li key={e.id} className="flex items-start gap-3 py-1.5 text-sm">
                   <span className="w-24 shrink-0 tabular-nums text-zinc-600 dark:text-zinc-400">{formatDate(e.date)}</span>
                   <span className="flex-1">
-                    {e.sourceOfficielle ? <a href={e.sourceOfficielle} target="_blank" rel="noopener noreferrer" className="hover:underline">{e.intitule}</a> : e.intitule}
+                    <Link href={`/calendrier#${e.slug}`} className="hover:underline">{e.intitule}</Link>
                     <span className="mt-0.5 flex flex-wrap gap-1">
                       {e.reglementation && <Badge tone="outline">{e.reglementation}</Badge>}
                       {e.statut && e.statut !== "À venir" && <Badge>{e.statut}</Badge>}

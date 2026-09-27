@@ -10,6 +10,8 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 - `/` : tableau de bord.
 - `/veille` : fil de veille, filtres et recherche.
 - `/veille/[id]` : détail d'un élément (seuls les statuts Retenu et Lu sont visibles).
+- `/calendrier` : frise des échéances réglementaires, dépliable vers les impacts data puis les règles de gestion.
+- `/regles` : référentiel de règles de gestion, filtrable.
 
 ## Collecteur RSS (lot 2)
 

@@ -43,12 +43,43 @@ export type NoteBlock = {
 
 export type Echeance = {
   id: string;
+  slug: string;
   intitule: string;
   date: string | null;
+  dateInitiale: string | null;
   reglementation: string | null;
   statut: string | null;
   piliers: string[];
   sourceOfficielle: string | null;
+  impactAssurance: string;
+  impactIds: string[];
+  veilleIds: string[];
+};
+
+export type ImpactData = {
+  id: string;
+  intitule: string;
+  description: string;
+  domaines: string[];
+  fonctions: string[];
+  branches: string[];
+  effort: string | null;
+  statut: string | null;
+  echeanceIds: string[];
+  regleIds: string[];
+};
+
+export type Regle = {
+  id: string;
+  regle: string;
+  controle: string;
+  nature: string | null;
+  criticite: string | null;
+  domaine: string | null;
+  referenceJuridique: string;
+  branches: string[];
+  statut: string | null;
+  impactIds: string[];
 };
 
 export type EtapeParcours = {
