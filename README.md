@@ -20,6 +20,8 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 - suggère piliers et tags d'après `collecteur/mots_cles.yml` (modifiable directement sur GitHub) ;
 - met à jour « Dernière collecte » et « Erreurs consécutives ».
 
+Sources sans flux exploitable (site qui bloque les robots, pas de RSS) : on renseigne dans « Flux RSS » une recherche Google Actualités, par exemple `https://news.google.com/rss/search?q=site%3Aexemple.fr&hl=fr&gl=FR&ceid=FR:fr`. Pour les médias généralistes, la requête ajoute les thèmes du radar (`site:exemple.fr (prévoyance OR mutuelle OR IA ...)`) afin de limiter le bruit. Le collecteur retire le nom du média ajouté au titre par Google.
+
 Lancement manuel : onglet Actions du dépôt, « Collecte RSS quotidienne », « Run workflow » (case « Simulation » pour ne rien écrire). Secret requis : `NOTION_TOKEN`.
 
 Tests : `pip install -r collecteur/requirements.txt pytest && python -m pytest collecteur/tests`.

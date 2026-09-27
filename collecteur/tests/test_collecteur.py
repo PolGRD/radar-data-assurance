@@ -53,3 +53,17 @@ def test_lecture_flux_rss():
 
 def test_entites_doublement_encodees():
     assert extrait("le jeudi 24&amp;nbsp;septembre à 9&amp;nbsp;h&amp;nbsp;30") == "le jeudi 24 septembre à 9 h 30"
+
+
+def test_flux_google_actualites():
+    rss = b"""<?xml version="1.0"?><rss version="2.0"><channel><title>Google</title>
+    <item><title>La pr\xc3\xa9voyance en 2026 - L'Argus de l'assurance</title>
+    <link>https://news.google.com/rss/articles/CBMiABC?oc=5</link>
+    <pubDate>Sat, 26 Sep 2026 08:00:00 GMT</pubDate>
+    <description>&lt;a href="https://news.google.com/rss/articles/CBMiABC?oc=5"&gt;La pr\xc3\xa9voyance en 2026&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color="#6f6f6f"&gt;L'Argus de l'assurance&lt;/font&gt;</description>
+    <source url="https://www.argusdelassurance.com">L'Argus de l'assurance</source></item>
+    </channel></rss>"""
+    [article] = lire_flux(rss)
+    assert article["titre"] == "La pr\u00e9voyance en 2026"
+    assert article["extrait"] == ""
+    assert article["date"] == "2026-09-26"
