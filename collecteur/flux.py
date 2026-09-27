@@ -88,10 +88,18 @@ def lire_flux(contenu: bytes) -> list[dict]:
         titre = _nettoyer(e.get("title") or "")
         if not lien or not titre:
             continue
+        # Google Actualités ajoute « - Nom du média » à la fin du titre.
+        media = _nettoyer((e.get("source") or {}).get("title") or "")
+        if media and titre.endswith(f" - {media}"):
+            titre = titre[: -len(media) - 3].rstrip()
         resume = e.get("summary") or ""
         if not resume and e.get("content"):
             resume = e["content"][0].get("value", "")
-        articles.append({"titre": titre[:2000], "url": lien, "date": _date(e), "extrait": extrait(resume)})
+        chapo = extrait(resume)
+        # Un « résumé » qui ne fait que répéter le titre (cas de Google Actualités) n'apporte rien.
+        if chapo.casefold().startswith(titre.casefold()[:60]):
+            chapo = ""
+        articles.append({"titre": titre[:2000], "url": lien, "date": _date(e), "extrait": chapo})
     return articles
 
 
