@@ -243,8 +243,17 @@ Page racine « Radar Data Assurance » : `3e79725b276581748650e029ed666430` (com
 | Échéances réglementaires | `980490a9db964be2a92354c0f263b8ba` | `4f13f344-aea7-4a81-aba6-f5a14b21e09b` |
 | Parcours d'apprentissage | `49e794ef85fc4da6803768e8ddfa5095` | `d93b2f61-5c7d-4cf1-8943-012d5a2445dd` |
 | Articles | `bb5f7714dd704e718789b0267cb12721` | `df8e3e65-e829-49d7-bb7e-150fbafcb3dd` |
+| Impacts data | `d92773c28adc40c4b9aad74ba735d8d6` | `64eabb90-48fe-4ad4-ac2d-97b2b85b7bb5` |
+| Règles de gestion | `7d3bb58e65284f60a8973b11793b0895` | `a2a82ac9-b5cc-4c91-948b-16279dde5ee4` |
 
 Relations bidirectionnelles : Veille ↔ Sources, Veille ↔ Fiches, Veille ↔ Échéances (propriété « Éléments de veille » côté cible). Vues créées : Veille (À trier, Retenus, Par statut), Parcours (Avancement), Échéances (Calendrier). Données amorcées : 16 sources (inactives, RSS à renseigner au lot 2), 9 compétences, 4 échéances.
+
+### Évolution du 27/09/2026 : frise réglementaire et impacts data
+- Chaîne de drill down : Échéance → Impacts data → Règles de gestion (relations bidirectionnelles, pas de lien direct échéance-règle).
+- **Impacts data** : Intitulé, Description, Domaine data, Fonctions concernées, Branche, Effort, Statut (À relire, Validé), Échéances, Règles.
+- **Règles de gestion** : Règle, Contrôle, Nature (REG, PDT, GES), Criticité (C1 à C3), Domaine de gestion, Référence juridique, Branche, Statut (Proposée, Validée, Invalidée, Reformulée), Impacts data. Amorcée avec 141 règles de prévoyance individuelle (version neutralisée). Page d'introduction « Référentiel de règles de gestion ».
+- Échéances : ajout de « Date initiale » (date avant report, affichée barrée).
+- Site : `/calendrier` en frise verticale avec dépliage sur deux niveaux et une adresse par échéance (`/calendrier#slug`), `/regles` filtrable et consultable.
 
 ## 15. Décisions actées
 - Sources (§6) et tags (§5) validés en l'état, révisables à tout moment dans Notion.

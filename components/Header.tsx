@@ -8,6 +8,8 @@ export function Header() {
         <Link href="/" className="mr-2 font-bold tracking-tight">Radar Data Assurance</Link>
         <Link href="/" className="rounded px-2 py-1 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">Tableau de bord</Link>
         <Link href="/veille" className="rounded px-2 py-1 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">Veille</Link>
+        <Link href="/calendrier" className="rounded px-2 py-1 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">Calendrier</Link>
+        <Link href="/regles" className="rounded px-2 py-1 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">Règles</Link>
         <div className="ml-auto flex items-center gap-2">
           <RefreshButton />
           <form action="/api/logout" method="post">

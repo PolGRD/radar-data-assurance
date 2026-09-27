@@ -11,7 +11,8 @@ import {
 } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
 import { DATA_SOURCES, NOTION_CACHE_TAG, REVALIDATE_SECONDS, STATUTS_VISIBLES } from "./config";
-import type { Echeance, EtapeParcours, Fiche, NoteBlock, RichText, VeilleDetail, VeilleItem } from "./types";
+import type { Echeance, EtapeParcours, Fiche, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
+import { slugify } from "./format";
 
 // ---------- Client ----------
 
@@ -225,19 +226,85 @@ export const getEcheances = cached(async (): Promise<Echeance[]> => {
     data_source_id: DATA_SOURCES.echeances,
     sorts: [{ property: "Date", direction: "ascending" }],
   });
+  const vus = new Set<string>();
   return pages.map((page) => {
     const p = page.properties;
+    const intitule = title(p) || "Sans titre";
+    // Adresse de la carte dans la frise (/calendrier#slug), rendue unique si deux intitulés se ressemblent.
+    let slug = slugify(intitule) || page.id;
+    if (vus.has(slug)) slug = `${slug}-${page.id.slice(0, 6)}`;
+    vus.add(slug);
     return {
       id: page.id,
-      intitule: title(p) || "Sans titre",
+      slug,
+      intitule,
       date: date(p, "Date"),
+      dateInitiale: date(p, "Date initiale"),
       reglementation: select(p, "Réglementation"),
       statut: select(p, "Statut"),
       piliers: multi(p, "Piliers"),
       sourceOfficielle: url(p, "Source officielle"),
+      impactAssurance: text(p, "Impact assurance"),
+      impactIds: relation(p, "Impacts data"),
+      veilleIds: relation(p, "Éléments de veille"),
     };
   });
-}, "echeances");
+}, "echeances-v2"); // v2 : slug, date initiale et relations (invalide les caches de l'ancien format)
+
+// Les bases Impacts data et Règles de gestion doivent être partagées avec l'intégration :
+// si ce n'est pas le cas, on renvoie null et la page l'explique au lieu de planter.
+async function siAccessible<T>(lire: () => Promise<T>): Promise<T | null> {
+  try {
+    return await lire();
+  } catch (erreur) {
+    if (erreur instanceof Error && /object_not_found|Could not find/i.test(erreur.message)) return null;
+    throw erreur;
+  }
+}
+
+export const getImpacts = cached(async (): Promise<ImpactData[] | null> => {
+  if (!notionConfigured()) return [];
+  return siAccessible(async () => {
+    const pages = await queryAll({ data_source_id: DATA_SOURCES.impacts });
+    return pages.map((page) => {
+      const p = page.properties;
+      return {
+        id: page.id,
+        intitule: title(p) || "Sans titre",
+        description: text(p, "Description"),
+        domaines: multi(p, "Domaine data"),
+        fonctions: multi(p, "Fonctions concernées"),
+        branches: multi(p, "Branche"),
+        effort: select(p, "Effort"),
+        statut: select(p, "Statut"),
+        echeanceIds: relation(p, "Échéances"),
+        regleIds: relation(p, "Règles"),
+      };
+    });
+  });
+}, "impacts");
+
+export const getRegles = cached(async (): Promise<Regle[] | null> => {
+  if (!notionConfigured()) return [];
+  return siAccessible(async () => {
+    const pages = await queryAll({ data_source_id: DATA_SOURCES.regles });
+    return pages.map((page) => {
+      const p = page.properties;
+      return {
+        id: page.id,
+        regle: title(p) || "Sans titre",
+        controle: text(p, "Contrôle"),
+        nature: select(p, "Nature"),
+        criticite: select(p, "Criticité"),
+        domaine: select(p, "Domaine de gestion"),
+        referenceJuridique: text(p, "Référence juridique"),
+        branches: multi(p, "Branche"),
+        statut: select(p, "Statut"),
+        impactIds: relation(p, "Impacts data"),
+      };
+    });
+  });
+}, "regles");
 
 export const getParcours = cached(async (): Promise<EtapeParcours[]> => {
   if (!notionConfigured()) return [];
