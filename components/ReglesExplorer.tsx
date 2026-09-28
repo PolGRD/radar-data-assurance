@@ -9,7 +9,7 @@ import { CriticiteBadge, NatureBadge } from "./RegleBadges";
 
 export type RegleVue = Regle & { citations: { impact: string; echeances: { slug: string; intitule: string }[] }[] };
 
-const FILTRES = ["domaine", "nature", "criticite", "statut", "citee"] as const;
+const FILTRES = ["branche", "domaine", "nature", "criticite", "statut", "citee"] as const;
 type Filtre = (typeof FILTRES)[number];
 
 const ORDRE_DOMAINES = [
@@ -69,6 +69,7 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
   const choix = useMemo(() => {
     const uniques = (f: (r: RegleVue) => string | null) => [...new Set(regles.map(f).filter((v): v is string => Boolean(v)))];
     return {
+      branches: [...new Set(regles.flatMap((r) => r.branches))].sort((a, b) => a.localeCompare(b, "fr")),
       domaines: ORDRE_DOMAINES.filter((d) => regles.some((r) => r.domaine === d)).concat(uniques((r) => r.domaine).filter((d) => !ORDRE_DOMAINES.includes(d))),
       natures: ["REG", "PDT", "GES"].filter((n) => regles.some((r) => r.nature === n)),
       criticites: ["C1", "C2", "C3"].filter((c) => regles.some((r) => r.criticite === c)),
@@ -85,6 +86,7 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
     const q = params.get("q")?.trim() ?? "";
     let liste = q ? fuse.search(q).map((r) => r.item) : regles;
     const f = Object.fromEntries(FILTRES.map((k) => [k, params.get(k) ?? ""])) as Record<Filtre, string>;
+    if (f.branche) liste = liste.filter((r) => r.branches.includes(f.branche));
     if (f.domaine) liste = liste.filter((r) => r.domaine === f.domaine);
     if (f.nature) liste = liste.filter((r) => r.nature === f.nature);
     if (f.criticite) liste = liste.filter((r) => r.criticite === f.criticite);
@@ -106,7 +108,8 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <Select id="r-branche" label="Branche" value={get("branche")} onChange={(v) => update({ branche: v })} choix={choix.branches} tous="Toutes" />
         <Select id="r-domaine" label="Domaine de gestion" value={get("domaine")} onChange={(v) => update({ domaine: v })} choix={choix.domaines} />
         <Select id="r-nature" label="Nature" value={get("nature")} onChange={(v) => update({ nature: v })} choix={choix.natures} tous="Toutes" />
         <Select id="r-criticite" label="Criticité" value={get("criticite")} onChange={(v) => update({ criticite: v })} choix={choix.criticites} tous="Toutes" />
@@ -145,8 +148,9 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
                   {r.statut && r.statut !== "Proposée" && <span className="shrink-0 text-xs text-zinc-500">{r.statut}</span>}
                 </div>
                 {r.controle && <p className="mt-1.5 break-words font-mono text-xs text-zinc-600 dark:text-zinc-400">{r.controle}</p>}
-                {(r.referenceJuridique || r.citations.length > 0) && (
+                {(r.branches.length > 0 || r.referenceJuridique || r.citations.length > 0) && (
                   <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+                    {r.branches.length > 0 && <span className="font-medium">{r.branches.join(" · ")}</span>}
                     {r.referenceJuridique && <span>{r.referenceJuridique}</span>}
                     {r.citations.map((c) => (
                       <span key={c.impact}>
