@@ -56,6 +56,8 @@ const REGLEMENTATION_STYLES: Record<string, { pastille: string; point: string }>
   "Solvabilité II": { pastille: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200", point: "bg-amber-500" },
   "Protection sociale complémentaire": { pastille: "bg-orange-100 text-orange-900 dark:bg-orange-950 dark:text-orange-200", point: "bg-orange-500" },
   Santé: { pastille: "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200", point: "bg-emerald-500" },
+  DSP3: { pastille: "bg-teal-100 text-teal-900 dark:bg-teal-950 dark:text-teal-200", point: "bg-teal-500" },
+  RSP1: { pastille: "bg-cyan-100 text-cyan-900 dark:bg-cyan-950 dark:text-cyan-200", point: "bg-cyan-500" },
 };
 const REGLEMENTATION_DEFAUT = { pastille: "bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200", point: "bg-zinc-500" };
 
