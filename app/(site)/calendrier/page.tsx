@@ -10,14 +10,14 @@ export const metadata: Metadata = { title: "Calendrier réglementaire" };
 export default async function CalendrierPage() {
   const [echeances, impacts, regles, veille] = await Promise.all([getEcheances(), getImpacts(), getRegles(), getVeilleItems()]);
   const jalons = construireFrise(echeances, impacts ?? [], regles ?? [], veille);
-  const nonPartagees = [impacts === null && "Impacts data", regles === null && "Règles de gestion"].filter(Boolean);
+  const nonPartagees = [impacts === null && "Impacts assureur", regles === null && "Règles de gestion"].filter(Boolean);
 
   return (
     <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Calendrier réglementaire</h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Clique sur une échéance pour voir ses impacts data, puis sur un impact pour voir les règles de gestion concernées.
+          Clique sur une échéance pour voir ses impacts chez l&apos;assureur, puis sur un impact pour voir les règles de gestion concernées.
         </p>
       </div>
       <NotConfigured />

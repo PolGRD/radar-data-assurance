@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import type { ImpactLie, JalonFrise } from "@/lib/calendrier";
+import type { JalonFrise } from "@/lib/calendrier";
 import { formatDate, pilierStyle, reglementationStyle } from "@/lib/format";
-import { CriticiteBadge, NatureBadge, StatutRelecture } from "./RegleBadges";
-
-const EFFORT_STYLE: Record<string, string> = {
-  Faible: "text-emerald-700 dark:text-emerald-400",
-  Moyen: "text-amber-700 dark:text-amber-400",
-  Fort: "text-red-700 dark:text-red-400",
-};
+import { ImpactsParDomaine } from "./ImpactCarte";
 
 function joursEntre(de: string, a: string): number {
   return Math.round((new Date(`${a}T12:00:00`).getTime() - new Date(`${de}T12:00:00`).getTime()) / 86_400_000);
@@ -36,84 +30,6 @@ function Chip({ actif, onClick, children, className = "" }: { actif: boolean; on
     >
       {children}
     </button>
-  );
-}
-
-function Impact({ impact }: { impact: ImpactLie }) {
-  const [ouvert, setOuvert] = useState(false);
-  const idContenu = `impact-${impact.id}`;
-  return (
-    <li className="rounded-md border border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-900/60">
-      <button
-        type="button"
-        onClick={() => setOuvert((o) => !o)}
-        aria-expanded={ouvert}
-        aria-controls={idContenu}
-        className="flex w-full flex-wrap items-start gap-x-2 gap-y-1 px-3 py-2 text-left"
-      >
-        <span aria-hidden="true" className={`mt-0.5 text-xs transition-transform ${ouvert ? "rotate-90" : ""}`}>▶</span>
-        <span className="min-w-0 flex-1 text-sm font-medium leading-snug">{impact.intitule}</span>
-        <span className="flex w-full flex-wrap items-center gap-1.5 pl-5 text-[11px] sm:w-auto sm:justify-end sm:pl-0">
-          <StatutRelecture statut={impact.statut} />
-          {impact.effort && <span className={`font-semibold ${EFFORT_STYLE[impact.effort] ?? ""}`}>Effort {impact.effort.toLowerCase()}</span>}
-          {impact.regles.length > 0 && (
-            <span className="rounded bg-zinc-200 px-1.5 py-0.5 dark:bg-zinc-800">{impact.regles.length} règle{impact.regles.length > 1 ? "s" : ""}</span>
-          )}
-        </span>
-      </button>
-      {ouvert && (
-        <div id={idContenu} className="space-y-3 border-t border-zinc-200 px-3 py-3 text-sm dark:border-zinc-800">
-          {impact.description && <p className="leading-relaxed text-zinc-700 dark:text-zinc-300">{impact.description}</p>}
-          <dl className="grid gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_1fr]">
-            {impact.fonctions.length > 0 && (<><dt className="text-zinc-500">Fonctions</dt><dd>{impact.fonctions.join(", ")}</dd></>)}
-            {impact.branches.length > 0 && (<><dt className="text-zinc-500">Branches</dt><dd>{impact.branches.join(", ")}</dd></>)}
-            {impact.domaines.length > 1 && (<><dt className="text-zinc-500">Domaines data</dt><dd>{impact.domaines.join(", ")}</dd></>)}
-          </dl>
-          {impact.regles.length > 0 && (
-            <div>
-              <h5 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">Règles de gestion concernées</h5>
-              <ul className="space-y-1.5">
-                {impact.regles.map((r) => (
-                  <li key={r.id} className="rounded border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-950">
-                    <div className="flex items-start gap-2">
-                      <span className="flex shrink-0 gap-1 pt-0.5"><NatureBadge nature={r.nature} /><CriticiteBadge criticite={r.criticite} /></span>
-                      <Link href={`/regles#regle-${r.id}`} className="text-sm hover:underline">{r.regle}</Link>
-                    </div>
-                    {r.controle && <p className="mt-1 break-words font-mono text-xs text-zinc-600 dark:text-zinc-400">{r.controle}</p>}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </li>
-  );
-}
-
-function ImpactsParDomaine({ impacts }: { impacts: ImpactLie[] }) {
-  // Un impact est rangé sous son premier domaine data, pour ne jamais apparaître deux fois.
-  const groupes = useMemo(() => {
-    const m = new Map<string, ImpactLie[]>();
-    for (const i of impacts) {
-      const d = i.domaines[0] ?? "Autres";
-      m.set(d, [...(m.get(d) ?? []), i]);
-    }
-    return [...m.entries()];
-  }, [impacts]);
-
-  if (!impacts.length) {
-    return <p className="text-sm text-zinc-500">Aucun impact data renseigné pour cette échéance.</p>;
-  }
-  return (
-    <div className="space-y-4">
-      {groupes.map(([domaine, liste]) => (
-        <section key={domaine}>
-          <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">{domaine}</h4>
-          <ul className="space-y-2">{liste.map((i) => <Impact key={i.id} impact={i} />)}</ul>
-        </section>
-      ))}
-    </div>
   );
 }
 
@@ -171,7 +87,7 @@ function Jalon({ jalon, today, ouvert, onToggle, cote }: {
             ))}
             {domaines.length > 5 && <span className="text-zinc-500">+{domaines.length - 5}</span>}
             <span className="ml-auto text-zinc-500">
-              {jalon.impacts.length ? `${jalon.impacts.length} impact${jalon.impacts.length > 1 ? "s" : ""} data` : "Impacts à documenter"}
+              {jalon.impacts.length ? `${jalon.impacts.length} impact${jalon.impacts.length > 1 ? "s" : ""}` : "Impacts à documenter"}
               {aRelire > 0 && ` · ${aRelire} à relire`}
               <span aria-hidden="true" className={`ml-2 inline-block transition-transform ${ouvert ? "rotate-180" : ""}`}>⌄</span>
             </span>
@@ -194,8 +110,8 @@ function Jalon({ jalon, today, ouvert, onToggle, cote }: {
               </div>
             )}
             <div>
-              <h4 className="mb-2 font-semibold">Impacts data chez l&apos;assureur</h4>
-              <ImpactsParDomaine impacts={jalon.impacts} />
+              <h4 className="mb-2 font-semibold">Impacts chez l&apos;assureur</h4>
+              <ImpactsParDomaine impacts={jalon.impacts} vide="Aucun impact renseigné pour cette échéance." />
             </div>
             {jalon.veille.length > 0 && (
               <div>
