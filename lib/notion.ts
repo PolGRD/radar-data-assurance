@@ -111,6 +111,8 @@ function toVeilleItem(page: PageObjectResponse, sourceNames: Record<string, stri
     pertinence: Number.isFinite(pertinence) && pertinence > 0 ? pertinence : null,
     statut: select(p, "Statut"),
     favori: checkbox(p, "Favori"),
+    analyseImpact: select(p, "Analyse d'impact"),
+    impactIds: relation(p, "Impacts assureur"),
   };
 }
 
@@ -129,7 +131,7 @@ export const getVeilleItems = cached(async (): Promise<VeilleItem[]> => {
     getSourceNames(),
   ]);
   return pages.map((p) => toVeilleItem(p, sourceNames));
-}, "veille");
+}, "veille-v2"); // v2 : analyse d'impact et impacts liés
 
 export const countATrier = cached(async (): Promise<number> => {
   if (!notionConfigured()) return 0;
@@ -216,7 +218,7 @@ export const getVeilleDetail = cached(async (id: string): Promise<VeilleDetail |
     fiches: fiches.filter((f) => f !== null).map(({ id, titre }) => ({ id, titre })),
     echeances: echeances.filter((e) => e !== null),
   };
-}, "veille-detail");
+}, "veille-detail-v2");
 
 // ---------- Tableau de bord : échéances, parcours, fiches ----------
 
@@ -251,7 +253,7 @@ export const getEcheances = cached(async (): Promise<Echeance[]> => {
   });
 }, "echeances-v2"); // v2 : slug, date initiale et relations (invalide les caches de l'ancien format)
 
-// Les bases Impacts data et Règles de gestion doivent être partagées avec l'intégration :
+// Les bases Impacts assureur et Règles de gestion doivent être partagées avec l'intégration :
 // si ce n'est pas le cas, on renvoie null et la page l'explique au lieu de planter.
 async function siAccessible<T>(lire: () => Promise<T>): Promise<T | null> {
   try {
@@ -275,14 +277,16 @@ export const getImpacts = cached(async (): Promise<ImpactData[] | null> => {
         domaines: multi(p, "Domaine data"),
         fonctions: multi(p, "Fonctions concernées"),
         branches: multi(p, "Branche"),
+        types: multi(p, "Type"),
         effort: select(p, "Effort"),
         statut: select(p, "Statut"),
         echeanceIds: relation(p, "Échéances"),
+        veilleIds: relation(p, "Éléments de veille"),
         regleIds: relation(p, "Règles"),
       };
     });
   });
-}, "impacts");
+}, "impacts-v2"); // v2 : type d'impact et éléments de veille
 
 export const getRegles = cached(async (): Promise<Regle[] | null> => {
   if (!notionConfigured()) return [];

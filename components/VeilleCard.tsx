@@ -26,6 +26,11 @@ export function VeilleCard({ item }: { item: VeilleItem }) {
         {item.piliers.map((p) => <PilierBadge key={p} pilier={p} />)}
         {item.type && <Badge tone="outline">{item.type}</Badge>}
         {item.tags.map((t) => <Badge key={t}>{t}</Badge>)}
+        {item.impactIds.length > 0 && (
+          <span className="rounded bg-orange-50 px-1.5 py-0.5 text-xs font-medium text-orange-800 dark:bg-orange-950 dark:text-orange-200">
+            {item.impactIds.length} impact{item.impactIds.length > 1 ? "s" : ""} assureur
+          </span>
+        )}
       </div>
     </article>
   );

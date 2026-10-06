@@ -14,6 +14,8 @@ export type VeilleItem = {
   pertinence: number | null;
   statut: string | null;
   favori: boolean;
+  analyseImpact: string | null;
+  impactIds: string[];
 };
 
 export type VeilleDetail = VeilleItem & {
@@ -63,9 +65,11 @@ export type ImpactData = {
   domaines: string[];
   fonctions: string[];
   branches: string[];
+  types: string[];
   effort: string | null;
   statut: string | null;
   echeanceIds: string[];
+  veilleIds: string[];
   regleIds: string[];
 };
 
