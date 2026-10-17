@@ -18,9 +18,12 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 `collecteur/collecte.py`, lancé chaque jour à 4 h UTC par GitHub Actions (`.github/workflows/collecte.yml`) :
 
 - découvre et inscrit dans Notion le flux RSS des sources qui ont une « URL du site » mais pas de flux ;
-- pour chaque source cochée « Active », crée les articles des 7 derniers jours dans Veille au statut « À trier », sans doublon (URL normalisée) ;
-- suggère piliers et tags d'après `collecteur/mots_cles.yml` (modifiable directement sur GitHub) ;
-- met à jour « Dernière collecte » et « Erreurs consécutives ».
+- pour chaque source cochée « Active », crée les articles des 7 derniers jours dans Veille au statut « À trier », sans doublon (URL normalisée), dans la limite de 5 par source et par jour ;
+- suggère piliers et tags d'après `collecteur/mots_cles.yml` (modifiable directement sur GitHub) et n'enregistre pas les articles qui ne correspondent à aucun pilier, sauf pour les sources cochées « Tout garder » ;
+- met à jour « Dernière collecte » et « Erreurs consécutives » ;
+- met à la corbeille Notion les articles « À trier » jamais triés après 21 jours et les « Écarté » après 30 jours (restaurables 30 jours) ; les articles retenus ou lus ne sont jamais touchés.
+
+Dans la base Sources, les colonnes « Collectés » et « Répartition par statut » montrent le rendement de chaque source.
 
 Sources sans flux exploitable (site qui bloque les robots, pas de RSS) : on renseigne dans « Flux RSS » une recherche Google Actualités, par exemple `https://news.google.com/rss/search?q=site%3Aexemple.fr&hl=fr&gl=FR&ceid=FR:fr`. Pour les médias généralistes, la requête ajoute les thèmes du radar (`site:exemple.fr (prévoyance OR mutuelle OR IA ...)`) afin de limiter le bruit. Le collecteur retire le nom du média ajouté au titre par Google.
 

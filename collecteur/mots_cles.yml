@@ -35,6 +35,10 @@ piliers:
     - DMBOK
     - CDMP
     - BCBS 239
+    - données personnelles
+    - RGPD
+    - données de santé
+    - NIR
   IA:
     - intelligence artificielle
     - artificial intelligence
@@ -68,6 +72,10 @@ piliers:
     - institution de prévoyance
     - institutions de prévoyance
     - protection sociale complémentaire
+    - protection sociale
+    - groupe de protection sociale
+    - groupes de protection sociale
+    - assurance vie
     - PSC
     - assurance santé
     - assurance emprunteur

@@ -55,6 +55,10 @@ class Notion:
     def modifier_page(self, page_id: str, proprietes: dict) -> dict:
         return self._appel("PATCH", f"/pages/{page_id}", {"properties": proprietes})
 
+    def mettre_a_la_corbeille(self, page_id: str) -> dict:
+        """La page reste restaurable 30 jours depuis la corbeille de Notion."""
+        return self._appel("PATCH", f"/pages/{page_id}", {"in_trash": True})
+
 
 # --- Lecture et écriture des valeurs de propriétés ---
 
