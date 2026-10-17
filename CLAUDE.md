@@ -28,9 +28,23 @@ Tous les secrets vont en variables d'environnement : Vercel pour le site, GitHub
 - Lot 4 : `RESEND_API_KEY`, `DIGEST_TO`
 
 ## Découpage
-- Lot 0 : fait (bases Notion créées et amorcées).
-- **Lot 1 : site MVP**. Connexion, tableau de bord, fil de veille avec filtres et recherche, page de détail.
-- Lot 2 : collecteur RSS avec pré-classement par mots-clés.
-- Lot 3 : fiches, calendrier, parcours.
+- Lots 0, 1 et 2 : faits.
+- Lot 3 : calendrier fait (frise, impacts assureur, règles de gestion) ; fiches et parcours à faire.
 - Lot 4 : digest e-mail.
 - Lot 5 : phase 2, blog public.
+
+## Ingénierie
+Objectif : un code que l'on peut faire évoluer longtemps sans peur de casser l'existant.
+- Une livraison = un sujet. Pas de refonte opportuniste glissée dans une fonctionnalité.
+- Tester avant de livrer. Toute logique nouvelle ou corrigée (calculs, filtres, liens entre bases, collecteur) arrive avec un test automatisé ; pour un bug, écrire d'abord le test qui le reproduit (skills `tdd` et `diagnosing-bugs`).
+- Avant chaque envoi : `npm run lint`, `npm run typecheck`, les tests, et une vérification du rendu dans un navigateur quand l'interface change. Le workflow « Vérifications » rejoue ces contrôles sur chaque PR : ne jamais demander de fusionner une PR en rouge.
+- Relire son propre diff avant l'envoi : code mort, branchements de test oubliés, secrets.
+- Quand le format des données lues dans Notion change, changer la clé du cache `unstable_cache` correspondante.
+- Les décisions d'architecture qui ne vont pas de soi sont consignées en ADR dans `docs/adr/`, le vocabulaire métier dans `GLOSSARY.md` (skill `domain-modeling`).
+- Les skills du projet sont dans `.agents/skills/` (installés avec `npx skills`, verrouillés dans `skills-lock.json`).
+
+## Pédagogie
+L'utilisateur veut apprendre les bonnes pratiques d'ingénierie logicielle au fil du projet.
+- À chaque livraison de code, terminer par un encart **Bonne pratique** : nommer la pratique appliquée, dire en deux ou trois phrases pourquoi elle compte ici, avec l'exemple concret du changement. Une seule pratique par livraison, sans répéter une pratique déjà expliquée récemment.
+- Employer le terme technique exact (test de non-régression, intégration continue, dette technique…) et le définir en une phrase la première fois.
+- Pour approfondir un sujet à la demande, proposer le skill `/teach`, à lancer dans un dossier dédié `apprentissage/` pour ne pas mélanger cours et code du site.
