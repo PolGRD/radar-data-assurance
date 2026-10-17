@@ -89,8 +89,8 @@ def page(id, statut, cree, modifie=None):
 
 def test_peremption_des_articles_a_trier_et_ecartes():
     pages = [
-        page("a-trier-vieux", "À trier", "2026-09-25T04:00:00.000Z"),     # 22 jours
-        page("a-trier-recent", "À trier", "2026-09-27T04:00:00.000Z"),    # 20 jours
+        page("a-trier-vieux", "À trier", "2026-10-13T20:00:00.000Z"),     # 3 jours et 8 heures
+        page("a-trier-recent", "À trier", "2026-10-14T08:00:00.000Z"),    # 2 jours et 20 heures
         page("ecarte-vieux", "Écarté", "2026-09-01T04:00:00.000Z", "2026-09-16T04:00:00.000Z"),   # écarté il y a 31 jours
         page("ecarte-recent", "Écarté", "2026-09-01T04:00:00.000Z", "2026-10-01T04:00:00.000Z"),
         page("retenu-ancien", "Retenu", "2025-01-01T04:00:00.000Z"),
