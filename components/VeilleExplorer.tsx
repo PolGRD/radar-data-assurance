@@ -1,10 +1,9 @@
 "use client";
 
-import Fuse from "fuse.js";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { VeilleItem } from "@/lib/types";
-import { daysAgo, referenceDate } from "@/lib/format";
+import { CRITERES_VEILLE, filtrerVeille } from "@/lib/filtres";
 import { VeilleCard } from "./VeilleCard";
 
 const PERIODES = [
@@ -14,7 +13,7 @@ const PERIODES = [
   { value: "365", label: "12 derniers mois" },
 ];
 
-const FILTER_KEYS = ["pilier", "tag", "branche", "source", "type", "periode", "pertinence", "favori", "tri"] as const;
+const FILTER_KEYS = CRITERES_VEILLE;
 type FilterKey = (typeof FILTER_KEYS)[number];
 
 function options(items: VeilleItem[], pick: (i: VeilleItem) => (string | null)[]): string[] {
@@ -81,41 +80,7 @@ export function VeilleExplorer({ items }: { items: VeilleItem[] }) {
     types: options(items, (i) => [i.type]),
   }), [items]);
 
-  const fuse = useMemo(() => new Fuse(items, {
-    keys: [
-      { name: "titre", weight: 3 },
-      { name: "resume", weight: 2 },
-      { name: "extrait", weight: 1 },
-      { name: "tags", weight: 1 },
-      { name: "sources", weight: 1 },
-    ],
-    threshold: 0.35,
-    ignoreLocation: true,
-    ignoreDiacritics: true,
-  }), [items]);
-
-  const results = useMemo(() => {
-    const q = params.get("q")?.trim() ?? "";
-    let list = q ? fuse.search(q).map((r) => r.item) : items;
-    const f = Object.fromEntries(FILTER_KEYS.map((k) => [k, params.get(k) ?? ""])) as Record<FilterKey, string>;
-    if (f.pilier) list = list.filter((i) => i.piliers.includes(f.pilier));
-    if (f.tag) list = list.filter((i) => i.tags.includes(f.tag));
-    if (f.branche) list = list.filter((i) => i.branches.includes(f.branche));
-    if (f.source) list = list.filter((i) => i.sources.includes(f.source));
-    if (f.type) list = list.filter((i) => i.type === f.type);
-    if (f.pertinence) list = list.filter((i) => (i.pertinence ?? 0) >= Number(f.pertinence));
-    if (f.favori) list = list.filter((i) => i.favori);
-    if (f.periode) {
-      const since = daysAgo(Number(f.periode)).getTime();
-      list = list.filter((i) => new Date(referenceDate(i)).getTime() >= since);
-    }
-    if (f.tri === "pertinence") {
-      list = [...list].sort((a, b) => (b.pertinence ?? 0) - (a.pertinence ?? 0) || referenceDate(b).localeCompare(referenceDate(a)));
-    } else if (!q) {
-      list = [...list].sort((a, b) => referenceDate(b).localeCompare(referenceDate(a)));
-    }
-    return list;
-  }, [items, fuse, params]);
+  const results = useMemo(() => filtrerVeille(items, Object.fromEntries(params)), [items, params]);
 
   const activeFilters = FILTER_KEYS.filter((k) => k !== "tri" && params.get(k)).length + (params.get("q") ? 1 : 0);
 

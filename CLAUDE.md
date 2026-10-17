@@ -37,7 +37,7 @@ Tous les secrets vont en variables d'environnement : Vercel pour le site, GitHub
 Objectif : un code que l'on peut faire évoluer longtemps sans peur de casser l'existant.
 - Une livraison = un sujet. Pas de refonte opportuniste glissée dans une fonctionnalité.
 - Tester avant de livrer. Toute logique nouvelle ou corrigée (calculs, filtres, liens entre bases, collecteur) arrive avec un test automatisé ; pour un bug, écrire d'abord le test qui le reproduit (skills `tdd` et `diagnosing-bugs`).
-- Avant chaque envoi : `npm run lint`, `npm run typecheck`, les tests, et une vérification du rendu dans un navigateur quand l'interface change. Le workflow « Vérifications » rejoue ces contrôles sur chaque PR : ne jamais demander de fusionner une PR en rouge.
+- Avant chaque envoi : `npm run lint`, `npm run typecheck`, `npm test` (Vitest, fichiers `*.test.ts` à côté du code testé) et `python -m pytest collecteur/tests`, et une vérification du rendu dans un navigateur quand l'interface change. Le workflow « Vérifications » rejoue ces contrôles sur chaque PR : ne jamais demander de fusionner une PR en rouge.
 - Relire son propre diff avant l'envoi : code mort, branchements de test oubliés, secrets.
 - Quand le format des données lues dans Notion change, changer la clé du cache `unstable_cache` correspondante.
 - Les décisions d'architecture qui ne vont pas de soi sont consignées en ADR dans `docs/adr/`, le vocabulaire métier dans `GLOSSARY.md` (skill `domain-modeling`).
