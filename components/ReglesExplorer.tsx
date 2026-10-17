@@ -1,15 +1,15 @@
 "use client";
 
-import Fuse from "fuse.js";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { CRITERES_REGLES, filtrerRegles } from "@/lib/filtres";
 import type { Regle } from "@/lib/types";
 import { CriticiteBadge, NatureBadge } from "./RegleBadges";
 
 export type RegleVue = Regle & { citations: { impact: string; echeances: { slug: string; intitule: string }[] }[] };
 
-const FILTRES = ["branche", "domaine", "nature", "criticite", "statut", "citee"] as const;
+const FILTRES = CRITERES_REGLES;
 type Filtre = (typeof FILTRES)[number];
 
 const ORDRE_DOMAINES = [
@@ -77,23 +77,7 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
     };
   }, [regles]);
 
-  const fuse = useMemo(() => new Fuse(regles, {
-    keys: [{ name: "regle", weight: 3 }, { name: "controle", weight: 2 }, { name: "referenceJuridique", weight: 1 }],
-    threshold: 0.35, ignoreLocation: true, ignoreDiacritics: true,
-  }), [regles]);
-
-  const resultats = useMemo(() => {
-    const q = params.get("q")?.trim() ?? "";
-    let liste = q ? fuse.search(q).map((r) => r.item) : regles;
-    const f = Object.fromEntries(FILTRES.map((k) => [k, params.get(k) ?? ""])) as Record<Filtre, string>;
-    if (f.branche) liste = liste.filter((r) => r.branches.includes(f.branche));
-    if (f.domaine) liste = liste.filter((r) => r.domaine === f.domaine);
-    if (f.nature) liste = liste.filter((r) => r.nature === f.nature);
-    if (f.criticite) liste = liste.filter((r) => r.criticite === f.criticite);
-    if (f.statut) liste = liste.filter((r) => r.statut === f.statut);
-    if (f.citee) liste = liste.filter((r) => r.citations.length > 0);
-    return liste;
-  }, [regles, fuse, params]);
+  const resultats = useMemo(() => filtrerRegles(regles, Object.fromEntries(params)), [regles, params]);
 
   // Sans recherche, on regroupe par domaine de gestion, dans l'ordre du cycle de vie du contrat.
   const groupes = useMemo(() => {

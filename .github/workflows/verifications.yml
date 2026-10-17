@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   site:
-    name: Site (style, typage, compilation)
+    name: Site (style, typage, tests, compilation)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -30,6 +30,8 @@ jobs:
         run: npm run lint
       - name: Typage (TypeScript)
         run: npm run typecheck
+      - name: Tests (Vitest)
+        run: npm test
       # Compilation sans accès à Notion : on vérifie que le site se construit, pas son contenu.
       - name: Compilation (Next.js)
         run: npm run build
