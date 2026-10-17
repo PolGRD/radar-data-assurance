@@ -28,6 +28,12 @@ Lancement manuel : onglet Actions du dépôt, « Collecte RSS quotidienne », «
 
 Tests : `pip install -r collecteur/requirements.txt pytest && python -m pytest collecteur/tests`.
 
+## Digest hebdomadaire (lot 4)
+
+`collecteur/digest.py`, lancé le lundi à 4 h 30 UTC par GitHub Actions (`.github/workflows/digest.yml`), envoie avec Resend un e-mail dont l'objet commence par `[Veille hebdo]` : articles retenus ou lus modifiés dans la semaine (à la une : favoris et pertinence 4 ou 5 ; puis par pilier), échéances des 60 prochains jours, parcours en cours, et une rubrique « À traiter » (articles à trier, sources en erreur depuis 3 jours, impacts à relire, analyses d'impact à faire). Le message est composé par gabarit, sans IA.
+
+Lancement manuel : onglet Actions, « Digest hebdomadaire », « Run workflow », mode `apercu` (le message est joint au lancement, rien n'est envoyé) ou `envoi`. Secrets requis : `NOTION_TOKEN`, `RESEND_API_KEY`, `DIGEST_TO` (sans domaine vérifié, Resend n'envoie qu'à l'adresse du compte Resend).
+
 ## Variables d'environnement
 
 Voir `.env.example`. À saisir dans Vercel, jamais dans le code.
