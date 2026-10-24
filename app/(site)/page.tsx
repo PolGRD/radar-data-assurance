@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { Badge, Favori, Pertinence, PilierBadge } from "@/components/Badge";
 import { Feuillet } from "@/components/Feuillet";
-import { IconeExterne, IconeSuite } from "@/components/Icones";
+import { BarreProgression } from "@/components/BarreProgression";
+import { IconeSuite } from "@/components/Icones";
 import { NotConfigured } from "@/components/NotConfigured";
 import { PILIERS } from "@/lib/config";
-import { compteARebours, daysAgo, ecart, formatDate, pilierBar, referenceDate } from "@/lib/format";
-import { countATrier, getDernieresFiches, getEcheances, getImpacts, getParcours, getVeilleItems } from "@/lib/notion";
+import { compteARebours, daysAgo, ecart, formatDate, referenceDate } from "@/lib/format";
+import { countATrier, getFiches, getEcheances, getImpacts, getParcours, getVeilleItems } from "@/lib/notion";
+import { progression, tableauParcours } from "@/lib/parcours";
 import type { VeilleItem } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -73,7 +75,7 @@ function ATraiter({ nombre, label, detail, href, urgent }: {
 
 export default async function TableauDeBord() {
   const [items, aTrier, echeances, parcours, fiches, impacts] = await Promise.all([
-    getVeilleItems(), countATrier(), getEcheances(), getParcours(), getDernieresFiches(), getImpacts(),
+    getVeilleItems(), countATrier(), getEcheances(), getParcours(), getFiches(), getImpacts(),
   ]);
 
   const weekStart = daysAgo(7).getTime();
@@ -94,9 +96,7 @@ export default async function TableauDeBord() {
   const aRelire = (impacts ?? []).filter((i) => i.statut === "À relire").length;
   const favoris = items.filter((i) => i.favori).length;
 
-  const faits = parcours.filter((p) => p.statut === "Fait").length;
-  const enCours = parcours.filter((p) => p.statut === "En cours").length;
-  const piliersParcours = [...new Set(parcours.map((p) => p.pilier ?? "Transverse"))];
+  const { faits, enCours } = progression(parcours);
 
   return (
     <div className="space-y-8">
@@ -192,40 +192,23 @@ export default async function TableauDeBord() {
           ) : <Empty>Aucun favori ni élément de pertinence 5 pour l&apos;instant.</Empty>}
         </Panel>
 
-        <Panel title="Progression du parcours">
+        <Panel title="Progression du parcours" action={<LienSuite href="/parcours">Le parcours</LienSuite>}>
           {parcours.length ? (
             <div className="space-y-3">
               <p className="text-sm text-ink-2">
                 {faits} fait{faits > 1 ? "s" : ""}, {enCours} en cours, sur {parcours.length} compétences.
               </p>
-              {piliersParcours.map((pilier) => {
-                const list = parcours.filter((p) => (p.pilier ?? "Transverse") === pilier);
-                const done = list.filter((p) => p.statut === "Fait").length;
-                const pct = Math.round((done / list.length) * 100);
-                return (
-                  <div key={pilier}>
-                    <div className="mb-1 flex justify-between text-sm">
-                      <span>{pilier}</span>
-                      <span className="font-chiffres font-semibold text-ink-3">{done}/{list.length}</span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-sheet-2 ring-1 ring-inset ring-rule" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`Parcours ${pilier}`}>
-                      <div className={`h-full ${pilierBar(pilier)}`} style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
+              {tableauParcours(parcours).map((ligne) => <BarreProgression key={ligne.pilier} ligne={ligne} />)}
             </div>
           ) : <Empty>Parcours vide.</Empty>}
         </Panel>
 
-        <Panel title="Dernières fiches modifiées">
+        <Panel title="Dernières fiches modifiées" action={<LienSuite href="/fiches">Toutes</LienSuite>}>
           {fiches.length ? (
             <ul className="divide-y divide-rule">
-              {fiches.map((f) => (
+              {fiches.slice(0, 5).map((f) => (
                 <li key={f.id} className="flex items-start justify-between gap-3 py-2 text-sm">
-                  <a href={f.notionUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1 hover:underline">
-                    {f.titre}<IconeExterne className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-3" />
-                  </a>
+                  <Link href={`/fiches/${f.adresse}`} className="hover:underline">{f.titre}</Link>
                   <span className="shrink-0 text-ink-3">{f.statut ? `${f.statut} · ` : ""}{formatDate(f.miseAJour)}</span>
                 </li>
               ))}

@@ -8,7 +8,7 @@ import { ImpactsParDomaine } from "@/components/ImpactCarte";
 import { NoteBlocks } from "@/components/NoteBlocks";
 import { impactsDeVeille } from "@/lib/calendrier";
 import { formatDate } from "@/lib/format";
-import { getImpacts, getRegles, getVeilleDetail } from "@/lib/notion";
+import { getFiches, getImpacts, getRegles, getVeilleDetail } from "@/lib/notion";
 
 export const revalidate = 3600;
 
@@ -32,9 +32,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default async function VeilleDetailPage({ params }: PageProps<"/veille/[id]">) {
-  const [item, impacts, regles] = await Promise.all([getVeilleDetail((await params).id), getImpacts(), getRegles()]);
+  const [item, impacts, regles, fiches] = await Promise.all([getVeilleDetail((await params).id), getImpacts(), getRegles(), getFiches()]);
   if (!item) notFound();
   const impactsLies = impactsDeVeille(item, impacts ?? [], regles ?? []);
+  const adresseFiche = new Map(fiches.map((f) => [f.id, f.adresse]));
 
   return (
     <article className="mx-auto max-w-3xl space-y-8">
@@ -83,7 +84,10 @@ export default async function VeilleDetailPage({ params }: PageProps<"/veille/[i
       )}
       {item.fiches.length > 0 && (
         <Section title="Fiches liées">
-          <ul className="list-disc space-y-1 pl-5 marker:text-ink-3">{item.fiches.map((f) => <li key={f.id}>{f.titre}</li>)}</ul>
+          <ul className="list-disc space-y-1 pl-5 marker:text-ink-3">{item.fiches.map((f) => {
+            const adresse = adresseFiche.get(f.id);
+            return <li key={f.id}>{adresse ? <Link href={`/fiches/${adresse}`} className="hover:underline">{f.titre}</Link> : f.titre}</li>;
+          })}</ul>
         </Section>
       )}
       {item.echeances.length > 0 && (

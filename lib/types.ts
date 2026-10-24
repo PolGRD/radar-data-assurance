@@ -91,12 +91,21 @@ export type EtapeParcours = {
   competence: string;
   pilier: string | null;
   statut: string | null;
+  type: string | null;
+  ressource: string | null;
+  echeanceCible: string | null;
+  notes: string;
 };
 
 export type Fiche = {
   id: string;
   titre: string;
+  slug: string;
+  adresse: string;
   statut: string | null;
+  piliers: string[];
+  tags: string[];
   miseAJour: string;
   notionUrl: string;
+  veilleIds: string[];
 };
