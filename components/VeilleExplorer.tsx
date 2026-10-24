@@ -28,12 +28,12 @@ function Select({ id, label, value, onChange, choices, allLabel = "Tous" }: {
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{label}</label>
+      <label htmlFor={id} className="text-xs font-semibold text-ink-2">{label}</label>
       <select
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+        className="champ"
       >
         <option value="">{allLabel}</option>
         {choices.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
@@ -96,7 +96,7 @@ export function VeilleExplorer({ items }: { items: VeilleItem[] }) {
         id="f-pertinence" label="Pertinence minimale" value={get("pertinence")} onChange={(v) => update({ pertinence: v })}
         choices={[5, 4, 3, 2].map((n) => ({ value: String(n), label: n === 5 ? "5 uniquement" : `${n} et plus` }))} allLabel="Toutes"
       />
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm font-medium">
         <input type="checkbox" checked={Boolean(get("favori"))} onChange={(e) => update({ favori: e.target.checked ? "1" : "" })} />
         Favoris uniquement
       </label>
@@ -104,7 +104,7 @@ export function VeilleExplorer({ items }: { items: VeilleItem[] }) {
         <button
           type="button"
           onClick={() => { setQuery(""); router.replace(pathname, { scroll: false }); }}
-          className="self-start text-sm underline"
+          className="self-start text-sm font-medium text-vermillon underline"
         >
           Effacer les filtres
         </button>
@@ -114,20 +114,20 @@ export function VeilleExplorer({ items }: { items: VeilleItem[] }) {
 
   return (
     <div className="flex flex-col gap-6 md:flex-row">
-      <aside className="md:w-60 md:shrink-0" aria-label="Filtres">
+      <aside className="md:w-56 md:shrink-0" aria-label="Filtres">
         <button
           type="button"
           onClick={() => setFiltersOpen((o) => !o)}
           aria-expanded={filtersOpen}
           aria-controls="filtres"
-          className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-left text-sm font-medium md:hidden dark:border-zinc-800"
+          className="w-full rounded-lg border border-rule-2 bg-sheet px-3 py-2 text-left text-sm font-medium md:hidden"
         >
           {filtersOpen ? "Masquer les filtres" : "Filtres"}{activeFilters ? ` (${activeFilters})` : ""}
         </button>
-        <div id="filtres" className={`${filtersOpen ? "mt-3" : "hidden"} md:mt-0 md:block`}>{filters}</div>
+        <div id="filtres" className={`${filtersOpen ? "mt-3" : "hidden"} rounded-xl border border-rule bg-sheet p-4 md:sticky md:top-4 md:mt-0 md:block`}>{filters}</div>
       </aside>
 
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <label htmlFor="recherche" className="sr-only">Rechercher</label>
           <input
@@ -136,29 +136,29 @@ export function VeilleExplorer({ items }: { items: VeilleItem[] }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher dans les titres, résumés, extraits…"
-            className="w-full flex-1 rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            className="champ w-full flex-1 py-2"
           />
           <label className="flex items-center gap-2 text-sm">
-            <span className="text-zinc-600 dark:text-zinc-400">Trier par</span>
+            <span className="text-ink-2">Trier par</span>
             <select
               value={get("tri")}
               onChange={(e) => update({ tri: e.target.value })}
-              className="rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="champ"
             >
               <option value="">{params.get("q") ? "Pertinence de la recherche" : "Date"}</option>
               <option value="pertinence">Note de pertinence</option>
             </select>
           </label>
         </div>
-        <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400" aria-live="polite">
+        <p className="mb-3 text-sm text-ink-2" aria-live="polite">
           {results.length} élément{results.length > 1 ? "s" : ""}
         </p>
         {results.length ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="divide-y divide-rule overflow-hidden rounded-xl border border-rule bg-sheet">
             {results.map((item) => <VeilleCard key={item.id} item={item} />)}
           </div>
         ) : (
-          <p className="rounded border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+          <p className="rounded-xl border border-dashed border-rule-2 p-8 text-center text-sm text-ink-2">
             Aucun élément ne correspond.
           </p>
         )}

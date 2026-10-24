@@ -1,14 +1,53 @@
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Paris" });
 
-export function formatDate(value: string | null | undefined): string {
-  if (!value) return "";
+function lireDate(value: string | null | undefined): Date | null {
+  if (!value) return null;
   const d = new Date(value.length === 10 ? `${value}T12:00:00` : value);
-  return Number.isNaN(d.getTime()) ? "" : dateFormatter.format(d);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+export function formatDate(value: string | null | undefined): string {
+  const d = lireDate(value);
+  return d ? dateFormatter.format(d) : "";
+}
+
+const partiesFormatter = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Paris" });
+const moisLongFormatter = new Intl.DateTimeFormat("fr-FR", { month: "long", timeZone: "Europe/Paris" });
+
+export type Feuillet = { jourSemaine: string; quantieme: string; mois: string; moisLong: string; annee: string };
+
+// Une date découpée comme une page d'éphéméride : bandeau du mois, grand quantième.
+export function feuillet(value: string | null | undefined): Feuillet | null {
+  const d = lireDate(value);
+  if (!d) return null;
+  const p = Object.fromEntries(partiesFormatter.formatToParts(d).map((x) => [x.type, x.value]));
+  return { jourSemaine: p.weekday, quantieme: p.day, mois: p.month, moisLong: moisLongFormatter.format(d), annee: p.year };
 }
 
 // Date de référence d'un élément : publication si connue, sinon collecte.
 export function referenceDate(item: { datePublication: string | null; dateCollecte: string }): string {
   return item.datePublication ?? item.dateCollecte;
+}
+
+function joursEntre(de: string, a: string): number {
+  return Math.round((new Date(`${a}T12:00:00`).getTime() - new Date(`${de}T12:00:00`).getTime()) / 86_400_000);
+}
+
+export type Ecart = { nombre: number; unite: string; futur: boolean };
+
+// Écart entre aujourd'hui et une date, dans l'unité la plus lisible : jours sous 45 jours, puis mois, puis années.
+export function ecart(today: string, date: string): Ecart {
+  const j = joursEntre(today, date);
+  const abs = Math.abs(j);
+  const [nombre, unite] = abs < 45 ? [abs, abs > 1 ? "jours" : "jour"] : abs < 730 ? [Math.round(abs / 30.4), "mois"] : [Math.round(abs / 365), "ans"];
+  return { nombre, unite, futur: j >= 0 };
+}
+
+// Écart lisible : « dans 12 jours », « il y a 3 mois ».
+export function compteARebours(today: string, date: string): string {
+  const e = ecart(today, date);
+  if (e.nombre === 0) return "aujourd'hui";
+  return `${e.futur ? "dans" : "il y a"} ${e.nombre} ${e.unite}`;
 }
 
 export function daysAgo(n: number): Date {

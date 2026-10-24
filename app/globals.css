@@ -1,52 +1,145 @@
 @import "tailwindcss";
 
+/* Éphéméride de bureau : papier froid, encre bleu nuit, bandeau bleu de Prusse, vermillon réservé aux dates et à l'urgence. */
 :root {
-  --background: #fafafa;
-  --foreground: #18181b;
-  color-scheme: light dark;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --paper: #eef1f6;
+  --sheet: #ffffff;
+  --sheet-2: #f6f8fb;
+  --ink: #14203a;
+  --ink-2: #44506b;
+  --ink-3: #5f6a84;
+  --rule: #dce1eb;
+  --rule-2: #bcc4d6;
+  --prusse: #163a7a;
+  --prusse-2: #0f2c61;
+  --prusse-ink: #ffffff;
+  --prusse-soft: #e3eaf7;
+  --vermillon: #c8321c;
+  --vermillon-ink: #ffffff;
+  --vermillon-soft: #fbe7e2;
+  --alerte: #8a5a00;
+  --alerte-soft: #fdf2d6;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
+    --paper: #0b1120;
+    --sheet: #131b2e;
+    --sheet-2: #18223a;
+    --ink: #e5e9f2;
+    --ink-2: #b1bacd;
+    --ink-3: #8e98b0;
+    --rule: #253049;
+    --rule-2: #36435f;
+    --prusse: #10295a;
+    --prusse-2: #0b1f47;
+    --prusse-ink: #ffffff;
+    --prusse-soft: #1b2b52;
+    --vermillon: #f0634b;
+    --vermillon-ink: #1a0905;
+    --vermillon-soft: #3a1a15;
+    --alerte: #f2c66b;
+    --alerte-soft: #33280f;
+    color-scheme: dark;
   }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sheet-2: var(--sheet-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-2: var(--rule-2);
+  --color-prusse: var(--prusse);
+  --color-prusse-2: var(--prusse-2);
+  --color-prusse-ink: var(--prusse-ink);
+  --color-prusse-soft: var(--prusse-soft);
+  --color-vermillon: var(--vermillon);
+  --color-vermillon-ink: var(--vermillon-ink);
+  --color-vermillon-soft: var(--vermillon-soft);
+  --color-alerte: var(--alerte);
+  --color-alerte-soft: var(--alerte-soft);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-chiffres: var(--font-barlow), "Arial Narrow", sans-serif-condensed, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--vermillon);
+  scrollbar-color: var(--rule-2) var(--paper);
+}
+
+::selection {
+  background: var(--prusse);
+  color: var(--prusse-ink);
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
 }
 
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--vermillon);
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
-/* Apparition en fondu des cartes de la frise au défilement (sans JavaScript, désactivée si l'utilisateur réduit les animations). */
+/* Champs de formulaire communs (recherche, listes déroulantes). */
+.champ {
+  border: 1px solid var(--rule-2);
+  background: var(--sheet);
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.875rem;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.champ:hover {
+  border-color: var(--ink-3);
+}
+.champ:focus-visible {
+  outline: 2px solid var(--prusse);
+  outline-offset: 0;
+  border-color: var(--prusse);
+}
+@media (prefers-color-scheme: dark) {
+  .champ:focus-visible {
+    outline-color: var(--vermillon);
+    border-color: var(--vermillon);
+  }
+}
+.champ::placeholder {
+  color: var(--ink-3);
+}
+input[type="checkbox"] {
+  accent-color: var(--prusse);
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Le feuillet du jour se pose sur la frise : seul mouvement du site, désactivé si l'utilisateur réduit les animations. */
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 60%;
-    }
+  .feuillet-pose {
+    animation: feuillet-pose 700ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both;
+    transform-origin: 50% 0;
   }
 }
 
-@keyframes reveal {
+@keyframes feuillet-pose {
   from {
-    opacity: 0;
-    transform: translateY(1.5rem);
+    transform: rotate(-7deg) translateY(-0.5rem);
+    box-shadow: 0 14px 24px -10px rgb(20 32 58 / 0.45);
   }
   to {
-    opacity: 1;
     transform: none;
+    box-shadow: 0 2px 4px -1px rgb(20 32 58 / 0.25);
   }
 }

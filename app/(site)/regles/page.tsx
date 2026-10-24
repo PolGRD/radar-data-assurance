@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { EnTetePage } from "@/components/EnTetePage";
 import { NotConfigured } from "@/components/NotConfigured";
 import { ReglesExplorer, type RegleVue } from "@/components/ReglesExplorer";
 import { getEcheances, getImpacts, getRegles } from "@/lib/notion";
@@ -30,15 +31,12 @@ export default async function ReglesPage() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Règles de gestion</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Référentiel de règles candidates à des contrôles qualité de données. REG : réglementaire, PDT : produit, GES : gestion. C1 bloquant, C2 majeur, C3 mineur.
-        </p>
-      </div>
+      <EnTetePage titre="Règles de gestion">
+        Référentiel de règles candidates à des contrôles qualité de données. REG : réglementaire, PDT : produit, GES : gestion. C1 bloquant, C2 majeur, C3 mineur.
+      </EnTetePage>
       <NotConfigured />
       {regles === null ? (
-        <p role="alert" className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+        <p role="alert" className="rounded-lg border border-alerte/40 bg-alerte-soft p-3 text-sm text-alerte">
           La base « Règles de gestion » n&apos;est pas partagée avec l&apos;intégration « Radar site ». Dans Notion, ouvre la base, menu « ⋯ », « Connexions », puis ajoute « Radar site ».
         </p>
       ) : (

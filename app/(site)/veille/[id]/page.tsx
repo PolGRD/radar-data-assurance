@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge, Pertinence, PilierBadge } from "@/components/Badge";
+import { Badge, Favori, Pertinence, PilierBadge } from "@/components/Badge";
+import { Feuillet } from "@/components/Feuillet";
+import { IconeExterne, IconeRetour } from "@/components/Icones";
 import { ImpactsParDomaine } from "@/components/ImpactCarte";
 import { NoteBlocks } from "@/components/NoteBlocks";
 import { impactsDeVeille } from "@/lib/calendrier";
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: PageProps<"/veille/[id]">): P
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-2">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{title}</h2>
+      <h2 className="border-b border-rule pb-1.5 text-sm font-semibold text-ink-2">{title}</h2>
       {children}
     </section>
   );
@@ -37,12 +39,12 @@ export default async function VeilleDetailPage({ params }: PageProps<"/veille/[i
   return (
     <article className="mx-auto max-w-3xl space-y-8">
       <div className="space-y-3">
-        <Link href="/veille" className="text-sm underline">← Fil de veille</Link>
-        <h1 className="text-2xl font-bold leading-tight tracking-tight">
-          {item.favori && <span className="mr-2 text-amber-500" title="Favori" aria-label="Favori">★</span>}
+        <Link href="/veille" className="inline-flex items-center gap-1 text-sm font-medium text-prusse hover:underline dark:text-ink"><IconeRetour className="h-4 w-4" />Fil de veille</Link>
+        <h1 className="text-[2rem] font-bold leading-tight tracking-[-0.02em] text-balance">
           {item.titre}
+          {item.favori && <span className="ml-2 inline-flex align-middle"><Favori /></span>}
         </h1>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-ink-2">
           {item.sources.join(", ") || "Source manuelle"}
           {item.datePublication && ` · publié le ${formatDate(item.datePublication)}`}
           {` · collecté le ${formatDate(item.dateCollecte)}`}
@@ -57,12 +59,12 @@ export default async function VeilleDetailPage({ params }: PageProps<"/veille/[i
         </div>
         <div className="flex flex-wrap gap-3 pt-1">
           {item.url && (
-            <a href={item.url} target="_blank" rel="noopener noreferrer" className="rounded bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300">
-              Lire la source ↗
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-md bg-prusse px-3.5 py-2 text-sm font-semibold text-prusse-ink transition-colors hover:bg-prusse-2">
+              Lire la source<IconeExterne className="h-4 w-4" />
             </a>
           )}
-          <a href={item.notionUrl} target="_blank" rel="noopener noreferrer" className="rounded border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800">
-            Modifier dans Notion ↗
+          <a href={item.notionUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-md border border-rule-2 bg-sheet px-3.5 py-2 text-sm font-medium transition-colors hover:border-ink-3">
+            Modifier dans Notion<IconeExterne className="h-4 w-4" />
           </a>
         </div>
       </div>
@@ -70,7 +72,7 @@ export default async function VeilleDetailPage({ params }: PageProps<"/veille/[i
       {item.resume && <Section title="Résumé"><p className="leading-relaxed">{item.resume}</p></Section>}
       {item.extrait && (
         <Section title="Extrait">
-          <blockquote className="border-l-4 border-zinc-300 pl-3 leading-relaxed text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">{item.extrait}</blockquote>
+          <blockquote className="rounded-lg bg-sheet-2 px-4 py-3 leading-relaxed text-ink-2 ring-1 ring-inset ring-rule">{item.extrait}</blockquote>
         </Section>
       )}
       {item.notes.length > 0 && <Section title="Mes notes"><NoteBlocks blocks={item.notes} /></Section>}
@@ -81,13 +83,18 @@ export default async function VeilleDetailPage({ params }: PageProps<"/veille/[i
       )}
       {item.fiches.length > 0 && (
         <Section title="Fiches liées">
-          <ul className="list-disc space-y-1 pl-5">{item.fiches.map((f) => <li key={f.id}>{f.titre}</li>)}</ul>
+          <ul className="list-disc space-y-1 pl-5 marker:text-ink-3">{item.fiches.map((f) => <li key={f.id}>{f.titre}</li>)}</ul>
         </Section>
       )}
       {item.echeances.length > 0 && (
         <Section title="Échéances liées">
-          <ul className="list-disc space-y-1 pl-5">
-            {item.echeances.map((e) => <li key={e.id}>{e.titre}{e.date && ` (${formatDate(e.date)})`}</li>)}
+          <ul className="space-y-2">
+            {item.echeances.map((e) => (
+              <li key={e.id} className="flex items-center gap-3">
+                {e.date ? <Feuillet date={e.date} taille="sm" /> : <span className="w-11 shrink-0" />}
+                <span>{e.titre}</span>
+              </li>
+            ))}
           </ul>
         </Section>
       )}
