@@ -4,7 +4,7 @@ Site de veille personnel (data gouvernance × IA × assurance de personnes). Sp�
 
 Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heures ; le bouton « Rafraîchir » force une relecture immédiate.
 
-## Pages (lots 1 et 3)
+## Pages privées (lots 1 et 3)
 
 - `/connexion` : mot de passe unique.
 - `/` : tableau de bord.
@@ -13,7 +13,20 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 - `/calendrier` : frise des échéances réglementaires, dépliable vers les impacts data puis les règles de gestion.
 - `/regles` : référentiel de règles de gestion, filtrable.
 - `/fiches` : fiches de synthèse, filtrables par pilier, tag et statut ; `/fiches/[adresse]` affiche le contenu de la page Notion (adresse tirée de la propriété « Slug », sinon du titre). Les fiches sans titre sont ignorées.
+- `/relecture` : articles du blog au statut « Relecture » ou programmés (date future), affichés comme le public les verra.
 - `/parcours` : compétences du parcours d'apprentissage en colonnes À faire, En cours, Fait, par pilier, avec la progression.
+
+## Pages publiques (lot 5)
+
+Sans mot de passe, indexées par les moteurs de recherche (voir `docs/adr/0001-blog-public-et-espace-prive.md`) :
+
+- `/blog` : articles de la base Notion « Articles » au statut « Publié » dont la « Date de publication » est passée (une date future programme la publication), regroupés par mois.
+- `/blog/[adresse]` : un article (adresse tirée de « Slug », sinon du titre).
+- `/blog/rss.xml` : flux RSS ; `/sitemap.xml` ; `robots.txt`.
+- `/a-propos` : contenu de la page Notion « À propos (blog public) » ; la page n'existe pas tant qu'elle est vide.
+- `/mentions-legales` : éditeur anonyme (LCEN), hébergeur Vercel.
+
+Un visiteur qui ouvre l'adresse du site arrive sur le blog ; le lien « Connexion » en pied de page mène à l'espace privé.
 
 ## Collecteur RSS (lot 2)
 

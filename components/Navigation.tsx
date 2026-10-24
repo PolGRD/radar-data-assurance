@@ -10,6 +10,7 @@ const LIENS = [
   { href: "/regles", label: "Règles" },
   { href: "/fiches", label: "Fiches" },
   { href: "/parcours", label: "Parcours" },
+  { href: "/relecture", label: "Blog" },
 ] as const;
 
 export function Navigation() {

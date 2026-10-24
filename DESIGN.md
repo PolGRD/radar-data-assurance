@@ -33,6 +33,12 @@ typography:
     fontWeight: 700
     lineHeight: 1.25
     letterSpacing: "-0.02em"
+  headline-lecture:
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "2.25rem"
+    fontWeight: 700
+    lineHeight: 1.15
+    letterSpacing: "-0.025em"
   title:
     fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
     fontSize: "1rem"
@@ -41,6 +47,11 @@ typography:
   body:
     fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
     fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.625
+  body-lecture:
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "1.0625rem"
     fontWeight: 400
     lineHeight: 1.625
   label:
@@ -149,6 +160,8 @@ Un papier froid, une encre bleu nuit, un bleu de Prusse pour l'ossature et un ve
 - **Quantième** (700, 5,5 rem) : le grand chiffre du feuillet du jour, tableau de bord seulement.
 - **Chiffre** (700, 2 rem) : quantièmes des feuillets moyens, files « À traiter », années de la frise (1,5 rem).
 - **Headline** (700, 1,75 rem, interlettrage -0,02 em) : titre de page ; 2 rem sur le détail d'article.
+- **Headline lecture** (700, 2,25 rem, interlettrage -0,025 em) : titres des pages publiques (blog, article, À propos, mentions légales).
+- **Body lecture** (400, 1,0625 rem, interligne 1,625) : corps des articles et de la page À propos.
 - **Title** (600, 1 rem) : titres de panneaux, intitulés d'échéances, titres d'articles.
 - **Body** (400, 0,875 à 1 rem, interligne 1,625) : résumés, impacts, notes, limité à 70-72 caractères par ligne.
 - **Label** (600, 0,75 rem) : libellés de filtres, métadonnées, étiquettes. Pas de capitales espacées.
@@ -159,6 +172,8 @@ Un papier froid, une encre bleu nuit, un bleu de Prusse pour l'ossature et un ve
 ## Layout
 
 Conteneur de 72 rem (max-w-6xl) avec 16 px de gouttière. Le tableau de bord ouvre sur une grille [feuillet du jour | titre et file « À traiter »], puis [retenus de la semaine | prochaines échéances (22 rem)], puis trois panneaux. Le fil de veille et les règles placent leurs filtres dans un panneau à gauche (14 rem, collant), les résultats en liste à filets dans un seul panneau. La frise est une colonne centrée sur ordinateur (cartes alternées), un axe à gauche sur mobile ; une carte dépliée prend toute la largeur.
+
+Le blog public reprend le même bandeau, réduit à « Blog » et « À propos », sur une colonne de lecture de 48 rem (max-w-3xl), texte courant à 17 px. Son accueil est un almanach : un intertitre par mois en condensée capitale bleu de Prusse suivi d'un filet, puis les articles portés par leur feuillet moyen bleu de Prusse.
 
 Rythme : 8 px dans les groupes, 24 à 32 px entre sections, 32 px sous l'en-tête de page. Sur mobile, le bandeau garde le nom et les actions sur une ligne et fait défiler les quatre liens sur une seconde ligne.
 

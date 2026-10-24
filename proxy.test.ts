@@ -32,10 +32,20 @@ describe("garde d'accès", () => {
     expect(cible.searchParams.get("next")).toBe("/veille?pilier=IA");
   });
 
-  it("redirige l'accueil vers la connexion sans paramètre de retour", async () => {
+  it("envoie un visiteur qui arrive sur l'accueil vers le blog, sans paramètre de retour", async () => {
     const cible = new URL((await proxy(requete("/"))).headers.get("location")!);
-    expect(cible.pathname).toBe("/connexion");
+    expect(cible.pathname).toBe("/blog");
     expect(cible.search).toBe("");
+  });
+
+  it("laisse passer un visiteur non connecté sur les pages publiques", async () => {
+    for (const chemin of ["/blog", "/blog/un-article", "/blog/rss.xml", "/mentions-legales"]) {
+      expect(laissePasser(await proxy(requete(chemin))), chemin).toBe(true);
+    }
+  });
+
+  it("garde privée la relecture des articles non publiés", async () => {
+    expect(new URL((await proxy(requete("/relecture/un-article"))).headers.get("location")!).pathname).toBe("/connexion");
   });
 
   it("répond 401 aux appels d'API non connectés, sans redirection", async () => {

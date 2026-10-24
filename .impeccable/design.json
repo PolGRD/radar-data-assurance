@@ -239,6 +239,14 @@
       "label": {
         "displayName": "Libellé",
         "purpose": "Filtres, métadonnées, étiquettes."
+      },
+      "headline-lecture": {
+        "displayName": "Titre de lecture",
+        "purpose": "Titres des pages publiques."
+      },
+      "body-lecture": {
+        "displayName": "Texte de lecture",
+        "purpose": "Corps des articles du blog."
       }
     },
     "shadows": [

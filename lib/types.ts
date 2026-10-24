@@ -109,3 +109,18 @@ export type Fiche = {
   notionUrl: string;
   veilleIds: string[];
 };
+
+export type ArticleBlog = {
+  id: string;
+  titre: string;
+  slug: string;
+  adresse: string;
+  statut: string | null;
+  date: string | null;
+  resume: string;
+  piliers: string[];
+  tags: string[];
+  couverture: string | null;
+  creation: string;
+  notionUrl: string;
+};

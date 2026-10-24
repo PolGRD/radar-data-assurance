@@ -1,6 +1,6 @@
 // Fabriques de données de test : des objets complets et valides, que chaque test
 // ajuste sur les seuls champs qui comptent pour lui.
-import type { EtapeParcours, Echeance, Fiche, ImpactData, Regle, VeilleItem } from "@/lib/types";
+import type { ArticleBlog, EtapeParcours, Echeance, Fiche, ImpactData, Regle, VeilleItem } from "@/lib/types";
 
 export function echeance(champs: Partial<Echeance> & { id: string }): Echeance {
   return {
@@ -43,5 +43,12 @@ export function etape(champs: Partial<EtapeParcours> & { id: string }): EtapePar
   return {
     competence: `Compétence ${champs.id}`, pilier: "IA", statut: "À faire", type: "Lecture", ressource: null,
     echeanceCible: null, notes: "", ...champs,
+  };
+}
+
+export function articleBlog(champs: Partial<ArticleBlog> & { id: string }): ArticleBlog {
+  return {
+    titre: `Article de blog ${champs.id}`, slug: "", adresse: champs.id, statut: "Publié", date: "2026-10-01", resume: "",
+    piliers: [], tags: [], couverture: null, creation: "2026-09-30T08:00:00.000Z", notionUrl: `https://notion.so/${champs.id}`, ...champs,
   };
 }
