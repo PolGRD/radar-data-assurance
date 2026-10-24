@@ -11,7 +11,7 @@ import {
 } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
 import { DATA_SOURCES, NOTION_CACHE_TAG, REVALIDATE_SECONDS, STATUTS_VISIBLES } from "./config";
-import type { Echeance, EtapeParcours, Fiche, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
+import type { ArticleBlog, Echeance, EtapeParcours, Fiche, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
 import { avecAdresses } from "./fiches";
 import { slugify } from "./format";
 
@@ -358,7 +358,43 @@ export const getFiches = cached(async (): Promise<Fiche[]> => {
   );
 }, "fiches-v2"); // v2 : adresse, piliers, tags et veille liée
 
-export const getFicheContenu = cached(async (id: string): Promise<NoteBlock[]> => {
+// Corps d'une page Notion (fiche, article, À propos) ; vide si la page n'est pas partagée avec l'intégration.
+export const getContenuPage = cached(async (id: string): Promise<NoteBlock[]> => {
   if (!notionConfigured()) return [];
-  return getBlocks(id);
-}, "fiche-contenu");
+  try {
+    return await getBlocks(id);
+  } catch {
+    return [];
+  }
+}, "contenu-page");
+
+// ---------- Articles du blog ----------
+
+// Articles « Publié » et « Relecture » ; le tri et la sélection pour le public se font dans lib/articles.
+export const getArticles = cached(async (): Promise<ArticleBlog[]> => {
+  if (!notionConfigured()) return [];
+  const pages = await queryAll({
+    data_source_id: DATA_SOURCES.articles,
+    filter: { or: ["Publié", "Relecture"].map((s) => ({ property: "Statut", select: { equals: s } })) },
+  });
+  return avecAdresses(
+    pages
+      .map((page) => {
+        const p = page.properties;
+        return {
+          id: page.id,
+          titre: title(p),
+          slug: text(p, "Slug"),
+          statut: select(p, "Statut"),
+          date: date(p, "Date de publication"),
+          resume: text(p, "Résumé"),
+          piliers: multi(p, "Piliers"),
+          tags: multi(p, "Tags"),
+          couverture: url(p, "Couverture"),
+          creation: page.created_time,
+          notionUrl: page.url,
+        };
+      })
+      .filter((a) => a.titre),
+  );
+}, "articles");

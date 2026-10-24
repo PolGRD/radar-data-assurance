@@ -6,7 +6,7 @@ import { IconeExterne, IconeRetour } from "@/components/Icones";
 import { NoteBlocks } from "@/components/NoteBlocks";
 import { StatutFiche } from "@/components/StatutFiche";
 import { formatDate } from "@/lib/format";
-import { getFicheContenu, getFiches, getVeilleItems } from "@/lib/notion";
+import { getContenuPage, getFiches, getVeilleItems } from "@/lib/notion";
 
 export const revalidate = 3600;
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps<"/fiches/[adresse]"
 export default async function FichePage({ params }: PageProps<"/fiches/[adresse]">) {
   const fiche = await trouver((await params).adresse);
   if (!fiche) notFound();
-  const [contenu, veille] = await Promise.all([getFicheContenu(fiche.id), getVeilleItems()]);
+  const [contenu, veille] = await Promise.all([getContenuPage(fiche.id), getVeilleItems()]);
   // Seuls les éléments retenus ou lus ont une page sur le site.
   const veilleLiee = veille.filter((v) => fiche.veilleIds.includes(v.id));
 

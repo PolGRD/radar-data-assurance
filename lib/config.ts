@@ -7,7 +7,13 @@ export const DATA_SOURCES = {
   parcours: "d93b2f61-5c7d-4cf1-8943-012d5a2445dd",
   impacts: "64eabb90-48fe-4ad4-ac2d-97b2b85b7bb5",
   regles: "a2a82ac9-b5cc-4c91-948b-16279dde5ee4",
+  articles: "df8e3e65-e829-49d7-bb7e-150fbafcb3dd",
 } as const;
+
+// Page Notion « À propos » du blog public (enfant de la page racine Radar Data Assurance).
+export const PAGE_A_PROPOS = "4039725b-2765-812e-b9d1-e570ce328373";
+
+export const SITE_URL = "https://radar-data-assurance.vercel.app";
 
 // Seuls ces statuts sont visibles sur le site.
 export const STATUTS_VISIBLES = ["Retenu", "Lu"] as const;

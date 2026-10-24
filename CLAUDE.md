@@ -17,7 +17,7 @@ Blog de veille personnel de Paul Girardeau : data gouvernance × IA × assurance
 ## Architecture
 - Next.js (App Router) + TypeScript + Tailwind CSS, déployé sur Vercel Hobby à l'adresse `radar-data-assurance.vercel.app`.
 - Lecture de Notion via l'API officielle (`@notionhq/client`), ISR avec revalidation d'une heure, plus une route de revalidation manuelle.
-- Protection : middleware Next.js, mot de passe unique (`SITE_PASSWORD`), cookie signé HttpOnly de 30 jours (`AUTH_SECRET`). En phase 2, `/blog` sera exclu du middleware.
+- Protection : proxy Next.js (`proxy.ts`), mot de passe unique (`SITE_PASSWORD`), cookie signé HttpOnly de 30 jours (`AUTH_SECRET`). Pages publiques (blog, À propos, mentions légales) définies par `estPublic` dans `lib/acces.ts` (ADR 0001).
 - Collecteur RSS et digest hebdo : scripts Python lancés par GitHub Actions (lots 2 et 4).
 - Les identifiants des bases Notion sont listés dans `SPECIFICATIONS.md` §14. Les noms de propriétés sont en français, avec accents : les reprendre exactement.
 
@@ -31,7 +31,7 @@ Tous les secrets vont en variables d'environnement : Vercel pour le site, GitHub
 - Lots 0, 1 et 2 : faits.
 - Lot 3 : fait (frise, impacts assureur, règles de gestion, fiches, parcours).
 - Lot 4 : digest e-mail.
-- Lot 5 : phase 2, blog public.
+- Lot 5 : phase 2, blog public : fait (blog, relecture privée, À propos, mentions légales, RSS, sitemap).
 
 ## Ingénierie
 Objectif : un code que l'on peut faire évoluer longtemps sans peur de casser l'existant.
