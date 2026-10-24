@@ -12,6 +12,7 @@ import {
 import { unstable_cache } from "next/cache";
 import { DATA_SOURCES, NOTION_CACHE_TAG, REVALIDATE_SECONDS, STATUTS_VISIBLES } from "./config";
 import type { Echeance, EtapeParcours, Fiche, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
+import { avecAdresses } from "./fiches";
 import { slugify } from "./format";
 
 // ---------- Client ----------
@@ -313,25 +314,51 @@ export const getRegles = cached(async (): Promise<Regle[] | null> => {
 export const getParcours = cached(async (): Promise<EtapeParcours[]> => {
   if (!notionConfigured()) return [];
   const pages = await queryAll({ data_source_id: DATA_SOURCES.parcours });
-  return pages.map((page) => ({
-    id: page.id,
-    competence: title(page.properties) || "Sans titre",
-    pilier: select(page.properties, "Pilier"),
-    statut: select(page.properties, "Statut"),
-  }));
-}, "parcours");
+  return pages.map((page) => {
+    const p = page.properties;
+    return {
+      id: page.id,
+      competence: title(p) || "Sans titre",
+      pilier: select(p, "Pilier"),
+      statut: select(p, "Statut"),
+      type: select(p, "Type"),
+      ressource: url(p, "Ressource"),
+      echeanceCible: date(p, "Échéance cible"),
+      notes: text(p, "Notes"),
+    };
+  });
+}, "parcours-v2"); // v2 : type, ressource, échéance cible et notes
 
-export const getDernieresFiches = cached(async (): Promise<Fiche[]> => {
+// ---------- Fiches de synthèse ----------
+
+// Fiches titrées, de la plus récemment modifiée à la plus ancienne ; une ligne sans titre est ignorée.
+export const getFiches = cached(async (): Promise<Fiche[]> => {
   if (!notionConfigured()) return [];
   const pages = await queryAll({
     data_source_id: DATA_SOURCES.fiches,
     sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
   });
-  return pages.slice(0, 5).map((page) => ({
-    id: page.id,
-    titre: title(page.properties) || "Sans titre",
-    statut: select(page.properties, "Statut"),
-    miseAJour: page.last_edited_time,
-    notionUrl: page.url,
-  }));
-}, "fiches");
+  return avecAdresses(
+    pages
+      .map((page) => {
+        const p = page.properties;
+        return {
+          id: page.id,
+          titre: title(p),
+          slug: text(p, "Slug"),
+          statut: select(p, "Statut"),
+          piliers: multi(p, "Piliers"),
+          tags: multi(p, "Tags"),
+          miseAJour: page.last_edited_time,
+          notionUrl: page.url,
+          veilleIds: relation(p, "Éléments de veille"),
+        };
+      })
+      .filter((f) => f.titre),
+  );
+}, "fiches-v2"); // v2 : adresse, piliers, tags et veille liée
+
+export const getFicheContenu = cached(async (id: string): Promise<NoteBlock[]> => {
+  if (!notionConfigured()) return [];
+  return getBlocks(id);
+}, "fiche-contenu");

@@ -29,7 +29,7 @@ Tous les secrets vont en variables d'environnement : Vercel pour le site, GitHub
 
 ## Découpage
 - Lots 0, 1 et 2 : faits.
-- Lot 3 : calendrier fait (frise, impacts assureur, règles de gestion) ; fiches et parcours à faire.
+- Lot 3 : fait (frise, impacts assureur, règles de gestion, fiches, parcours).
 - Lot 4 : digest e-mail.
 - Lot 5 : phase 2, blog public.
 

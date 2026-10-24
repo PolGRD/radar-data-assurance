@@ -4,7 +4,7 @@ Site de veille personnel (data gouvernance × IA × assurance de personnes). Sp�
 
 Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heures ; le bouton « Rafraîchir » force une relecture immédiate.
 
-## Pages (lot 1)
+## Pages (lots 1 et 3)
 
 - `/connexion` : mot de passe unique.
 - `/` : tableau de bord.
@@ -12,6 +12,8 @@ Le contenu se gère uniquement dans Notion. Le site lit les bases toutes les heu
 - `/veille/[id]` : détail d'un élément (seuls les statuts Retenu et Lu sont visibles).
 - `/calendrier` : frise des échéances réglementaires, dépliable vers les impacts data puis les règles de gestion.
 - `/regles` : référentiel de règles de gestion, filtrable.
+- `/fiches` : fiches de synthèse, filtrables par pilier, tag et statut ; `/fiches/[adresse]` affiche le contenu de la page Notion (adresse tirée de la propriété « Slug », sinon du titre). Les fiches sans titre sont ignorées.
+- `/parcours` : compétences du parcours d'apprentissage en colonnes À faire, En cours, Fait, par pilier, avec la progression.
 
 ## Collecteur RSS (lot 2)
 

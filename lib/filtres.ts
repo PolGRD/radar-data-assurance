@@ -2,13 +2,15 @@
 // Logique pure, sans React : les composants d'affichage l'appellent, les tests aussi.
 import Fuse, { type IFuseOptions } from "fuse.js";
 import { referenceDate } from "./format";
-import type { Regle, VeilleItem } from "./types";
+import type { Fiche, Regle, VeilleItem } from "./types";
 
 export const CRITERES_VEILLE = ["pilier", "tag", "branche", "source", "type", "periode", "pertinence", "favori", "tri"] as const;
 export const CRITERES_REGLES = ["branche", "domaine", "nature", "criticite", "statut", "citee"] as const;
+export const CRITERES_FICHES = ["pilier", "tag", "statut"] as const;
 
 export type CriteresVeille = Partial<Record<(typeof CRITERES_VEILLE)[number] | "q", string>>;
 export type CriteresRegles = Partial<Record<(typeof CRITERES_REGLES)[number] | "q", string>>;
+export type CriteresFiches = Partial<Record<(typeof CRITERES_FICHES)[number] | "q", string>>;
 
 // Un index de recherche par liste : reconstruit seulement quand la liste change.
 const index = new WeakMap<object, Fuse<unknown>>();
@@ -66,4 +68,13 @@ export function filtrerRegles<R extends Regle & { citations: unknown[] }>(regles
   if (c.statut) liste = liste.filter((r) => r.statut === c.statut);
   if (c.citee) liste = liste.filter((r) => r.citations.length > 0);
   return liste;
+}
+
+export function filtrerFiches(fiches: Fiche[], c: CriteresFiches): Fiche[] {
+  const q = c.q?.trim() ?? "";
+  let liste = q ? rechercher(fiches, q, { keys: [{ name: "titre", weight: 3 }, { name: "tags", weight: 1 }] }) : fiches;
+  if (c.pilier) liste = liste.filter((f) => f.piliers.includes(c.pilier!));
+  if (c.tag) liste = liste.filter((f) => f.tags.includes(c.tag!));
+  if (c.statut) liste = liste.filter((f) => f.statut === c.statut);
+  return q ? liste : [...liste].sort((a, b) => b.miseAJour.localeCompare(a.miseAJour));
 }
