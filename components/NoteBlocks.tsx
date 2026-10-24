@@ -5,7 +5,7 @@ function Rich({ parts }: { parts: RichText[] }) {
     <>
       {parts.map((p, i) => {
         let node: React.ReactNode = p.text;
-        if (p.code) node = <code className="rounded bg-zinc-100 px-1 text-[0.9em] dark:bg-zinc-800">{node}</code>;
+        if (p.code) node = <code className="rounded bg-sheet-2 px-1 text-[0.9em] ring-1 ring-inset ring-rule">{node}</code>;
         if (p.bold) node = <strong>{node}</strong>;
         if (p.italic) node = <em>{node}</em>;
         if (p.strikethrough) node = <s>{node}</s>;
@@ -30,18 +30,18 @@ function Block({ block }: { block: NoteBlock }) {
     case "heading_3":
       return <h4 className="mt-3 font-semibold">{content}</h4>;
     case "quote":
-      return <blockquote className="border-l-4 border-zinc-300 pl-3 italic dark:border-zinc-600">{content}<Children blocks={block.children} /></blockquote>;
+      return <blockquote className="rounded-lg bg-sheet-2 px-4 py-3 italic text-ink-2 ring-1 ring-inset ring-rule">{content}<Children blocks={block.children} /></blockquote>;
     case "callout":
-      return <div className="rounded bg-zinc-100 p-3 dark:bg-zinc-800">{content}<Children blocks={block.children} /></div>;
+      return <div className="rounded-lg bg-prusse-soft p-3">{content}<Children blocks={block.children} /></div>;
     case "code":
-      return <pre className="overflow-x-auto rounded bg-zinc-100 p-3 text-sm dark:bg-zinc-800"><code>{block.text.map((t) => t.text).join("")}</code></pre>;
+      return <pre className="overflow-x-auto rounded-lg bg-sheet-2 p-3 text-sm ring-1 ring-inset ring-rule"><code>{block.text.map((t) => t.text).join("")}</code></pre>;
     case "divider":
-      return <hr className="border-zinc-200 dark:border-zinc-700" />;
+      return <hr className="border-rule" />;
     case "to_do":
       return (
         <div>
           <label className="flex gap-2">
-            <input type="checkbox" checked={block.checked} readOnly disabled className="mt-1" />
+            <input type="checkbox" checked={block.checked} readOnly disabled className="mt-1 shrink-0" />
             <span className={block.checked ? "line-through opacity-70" : ""}>{content}</span>
           </label>
           <Children blocks={block.children} />
@@ -53,7 +53,7 @@ function Block({ block }: { block: NoteBlock }) {
       return block.url ? <p><a href={block.url} target="_blank" rel="noopener noreferrer" className="break-all underline">{block.url}</a></p> : null;
     case "image":
       // eslint-disable-next-line @next/next/no-img-element
-      return block.url ? <img src={block.url} alt="" className="max-w-full rounded" /> : null;
+      return block.url ? <img src={block.url} alt="" className="max-w-full rounded-lg" /> : null;
     case "paragraph":
     case "toggle":
     case "child_page":
@@ -82,5 +82,5 @@ export function NoteBlocks({ blocks }: { blocks: NoteBlock[] }) {
       out.push(<Block key={blocks[i].id} block={blocks[i]} />);
     }
   }
-  return <div className="space-y-3 leading-relaxed">{out}</div>;
+  return <div className="max-w-[72ch] space-y-3 leading-relaxed">{out}</div>;
 }

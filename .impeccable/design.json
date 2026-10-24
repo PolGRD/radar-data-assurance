@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T12:25:47.478633+00:00",
+  "title": "Design System: Radar Data Assurance",
+  "extensions": {
+    "colorMeta": {
+      "papier-froid": {
+        "role": "neutral",
+        "displayName": "Papier froid",
+        "canonical": "#eef1f6",
+        "tonalRamp": [
+          "#1f252d",
+          "#323c4d",
+          "#435470",
+          "#526a94",
+          "#768cb2",
+          "#a7b4c8",
+          "#d2d7e0",
+          "#f0f2f4"
+        ]
+      },
+      "feuille": {
+        "role": "neutral",
+        "displayName": "Feuille",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#b8b8b8",
+          "#d9d9d9",
+          "#f2f2f2"
+        ]
+      },
+      "feuille-2": {
+        "role": "neutral",
+        "displayName": "Feuille ombrée",
+        "canonical": "#f6f8fb",
+        "tonalRamp": [
+          "#1e252f",
+          "#2f3c51",
+          "#3d5475",
+          "#496a9c",
+          "#6f8cb9",
+          "#a3b4cc",
+          "#d0d7e1",
+          "#f0f2f5"
+        ]
+      },
+      "encre": {
+        "role": "neutral",
+        "displayName": "Encre bleu nuit",
+        "canonical": "#14203a",
+        "tonalRamp": [
+          "#1b2231",
+          "#2a3855",
+          "#364c7d",
+          "#3e5fa7",
+          "#6583c3",
+          "#9eaed1",
+          "#ced5e4",
+          "#eff1f5"
+        ]
+      },
+      "encre-2": {
+        "role": "neutral",
+        "displayName": "Encre secondaire",
+        "canonical": "#44506b",
+        "tonalRamp": [
+          "#21242b",
+          "#363c4a",
+          "#49536a",
+          "#5b6a8b",
+          "#7e8ca9",
+          "#acb3c3",
+          "#d4d7de",
+          "#f1f2f4"
+        ]
+      },
+      "encre-3": {
+        "role": "neutral",
+        "displayName": "Encre des métadonnées",
+        "canonical": "#5f6a84",
+        "tonalRamp": [
+          "#23252a",
+          "#383d47",
+          "#4d5465",
+          "#616c84",
+          "#848ea4",
+          "#afb4c0",
+          "#d5d7dc",
+          "#f1f2f3"
+        ]
+      },
+      "filet": {
+        "role": "neutral",
+        "displayName": "Filet",
+        "canonical": "#dce1eb",
+        "tonalRamp": [
+          "#20242c",
+          "#343c4c",
+          "#45536d",
+          "#556990",
+          "#798bae",
+          "#a9b3c6",
+          "#d3d7df",
+          "#f1f2f4"
+        ]
+      },
+      "filet-2": {
+        "role": "neutral",
+        "displayName": "Filet appuyé",
+        "canonical": "#bcc4d6",
+        "tonalRamp": [
+          "#21242c",
+          "#353c4a",
+          "#48526b",
+          "#59698d",
+          "#7d8bab",
+          "#abb3c4",
+          "#d3d7de",
+          "#f1f2f4"
+        ]
+      },
+      "bleu-de-prusse": {
+        "role": "primary",
+        "displayName": "Bleu de Prusse",
+        "canonical": "#163a7a",
+        "tonalRamp": [
+          "#172236",
+          "#21375f",
+          "#264b8c",
+          "#285ebe",
+          "#5181d7",
+          "#93addc",
+          "#c9d4e8",
+          "#eef1f6"
+        ]
+      },
+      "bleu-de-prusse-fonce": {
+        "role": "primary",
+        "displayName": "Bleu de Prusse foncé",
+        "canonical": "#0f2c61",
+        "tonalRamp": [
+          "#162136",
+          "#1f3660",
+          "#244a8f",
+          "#245cc2",
+          "#4d7fdb",
+          "#91acde",
+          "#c9d4e9",
+          "#eef1f7"
+        ]
+      },
+      "vermillon": {
+        "role": "secondary",
+        "displayName": "Vermillon d'éphéméride",
+        "canonical": "#c8321c",
+        "tonalRamp": [
+          "#371a16",
+          "#61271e",
+          "#903022",
+          "#c43621",
+          "#dd5e4b",
+          "#df9a90",
+          "#e9ccc8",
+          "#f7efee"
+        ]
+      },
+      "vermillon-pale": {
+        "role": "secondary",
+        "displayName": "Vermillon pâle",
+        "canonical": "#fbe7e2",
+        "tonalRamp": [
+          "#371c15",
+          "#622b1e",
+          "#913822",
+          "#c44221",
+          "#dd684b",
+          "#dfa090",
+          "#eacfc8",
+          "#f7f0ee"
+        ]
+      },
+      "alerte": {
+        "role": "tertiary",
+        "displayName": "Ocre d'alerte",
+        "canonical": "#8a5a00",
+        "tonalRamp": [
+          "#3c2d10",
+          "#6c4d13",
+          "#a27010",
+          "#df9407",
+          "#f5b133",
+          "#ecc883",
+          "#efe0c3",
+          "#f8f4ec"
+        ]
+      },
+      "alerte-pale": {
+        "role": "tertiary",
+        "displayName": "Ocre pâle",
+        "canonical": "#fdf2d6",
+        "tonalRamp": [
+          "#3a2f12",
+          "#685117",
+          "#9c7617",
+          "#d59d11",
+          "#ecba3c",
+          "#e7cc88",
+          "#ede2c5",
+          "#f8f5ed"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "quantieme": {
+        "displayName": "Quantième",
+        "purpose": "Grand chiffre du feuillet du jour."
+      },
+      "chiffre": {
+        "displayName": "Chiffre",
+        "purpose": "Quantièmes, files À traiter, années."
+      },
+      "headline": {
+        "displayName": "Titre de page",
+        "purpose": "Un par page."
+      },
+      "title": {
+        "displayName": "Titre",
+        "purpose": "Panneaux, échéances, articles."
+      },
+      "body": {
+        "displayName": "Texte",
+        "purpose": "Résumés, impacts, notes."
+      },
+      "label": {
+        "displayName": "Libellé",
+        "purpose": "Filtres, métadonnées, étiquettes."
+      }
+    },
+    "shadows": [
+      {
+        "name": "epaisseur-feuillet",
+        "value": "0 1px 3px -1px rgb(20 32 58 / 0.25)",
+        "purpose": "Sous chaque feuillet."
+      },
+      {
+        "name": "carte-depliee",
+        "value": "0 8px 24px -12px rgb(20 32 58 / 0.35)",
+        "purpose": "Échéance ouverte dans la frise."
+      },
+      {
+        "name": "annee-collante",
+        "value": "0 2px 6px -2px rgb(20 32 58 / 0.4)",
+        "purpose": "Repère d'année de la frise."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-feuillet",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Pose du feuillet du jour (700 ms), chevrons et transitions de couleur."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bandeau de navigation",
+      "kind": "nav",
+      "refersTo": "bandeau-navigation",
+      "description": "Bandeau bleu de Prusse, lien actif souligné de vermillon.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\"><b>Radar</b> Data Assurance</a><a class=\"ds-nav-link\" aria-current=\"page\" href=\"#\">Tableau de bord</a><a class=\"ds-nav-link\" href=\"#\">Veille</a><a class=\"ds-nav-link\" href=\"#\">Calendrier</a><a class=\"ds-nav-link\" href=\"#\">Règles</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:flex-end;gap:4px;background:#163a7a;padding:8px 16px 0;font-family:system-ui,sans-serif}.ds-nav-brand{color:#fff;text-decoration:none;margin-right:20px;padding-bottom:8px;font-size:14px;color:rgba(255,255,255,.8)}.ds-nav-brand b{font-family:'Barlow Condensed', 'Arial Narrow', sans-serif;font-size:24px;text-transform:uppercase;letter-spacing:.025em;color:#fff}.ds-nav-link{position:relative;color:rgba(255,255,255,.8);text-decoration:none;font-size:14px;font-weight:500;padding:10px 12px;border-radius:4px 4px 0 0;transition:background .15s}.ds-nav-link:hover{background:rgba(255,255,255,.08);color:#fff}.ds-nav-link[aria-current]{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 -3px 0 #c8321c}.ds-nav-link:focus-visible{outline:2px solid #c8321c;outline-offset:2px}"
+    },
+    {
+      "name": "Bouton principal",
+      "kind": "button",
+      "refersTo": "bouton-principal",
+      "description": "Action principale (Lire la source, Entrer).",
+      "html": "<button class=\"ds-btn-primary\">Lire la source</button>",
+      "css": ".ds-btn-primary{background:#163a7a;color:#fff;border:0;border-radius:6px;padding:8px 14px;font:600 14px system-ui,sans-serif;transition:background .15s}.ds-btn-primary:hover{background:#0f2c61}.ds-btn-primary:focus-visible{outline:2px solid #c8321c;outline-offset:2px}"
+    },
+    {
+      "name": "Bouton secondaire",
+      "kind": "button",
+      "refersTo": "bouton-secondaire",
+      "description": "Action secondaire (Modifier dans Notion).",
+      "html": "<button class=\"ds-btn-secondary\">Modifier dans Notion</button>",
+      "css": ".ds-btn-secondary{background:#fff;color:#14203a;border:1px solid #bcc4d6;border-radius:6px;padding:8px 14px;font:500 14px system-ui,sans-serif;transition:border-color .15s}.ds-btn-secondary:hover{border-color:#5f6a84}.ds-btn-secondary:focus-visible{outline:2px solid #c8321c;outline-offset:2px}"
+    },
+    {
+      "name": "Champ de recherche",
+      "kind": "input",
+      "refersTo": "champ",
+      "description": "Recherche et listes déroulantes de filtres.",
+      "html": "<input class=\"ds-champ\" type=\"search\" placeholder=\"Rechercher dans les titres, résumés, extraits…\">",
+      "css": ".ds-champ{background:#fff;color:#14203a;border:1px solid #bcc4d6;border-radius:6px;padding:8px 10px;font:14px system-ui,sans-serif;width:320px;caret-color:#c8321c}.ds-champ:hover{border-color:#5f6a84}.ds-champ:focus-visible{outline:2px solid #163a7a;border-color:#163a7a}.ds-champ::placeholder{color:#5f6a84}"
+    },
+    {
+      "name": "Étiquette",
+      "kind": "chip",
+      "refersTo": "etiquette",
+      "description": "Tags, types, réglementations en liste.",
+      "html": "<span class=\"ds-etiquette\">Qualité des données</span>",
+      "css": ".ds-etiquette{display:inline-block;background:#f6f8fb;color:#44506b;box-shadow:inset 0 0 0 1px #dce1eb;border-radius:4px;padding:2px 6px;font:500 12px system-ui,sans-serif}"
+    },
+    {
+      "name": "Feuillet",
+      "kind": "custom",
+      "refersTo": "feuillet-bandeau",
+      "description": "Signature : une date d'échéance posée comme une page d'éphéméride.",
+      "html": "<time class=\"ds-feuillet\" datetime=\"2026-12-01\"><span class=\"ds-feuillet-mois\">déc</span><span class=\"ds-feuillet-jour\">1</span><span class=\"ds-feuillet-an\">2026</span></time>",
+      "css": ".ds-feuillet{display:inline-flex;flex-direction:column;width:56px;text-align:center;background:#fff;border:1px solid #bcc4d6;border-radius:5px;overflow:hidden;box-shadow:0 1px 3px -1px rgba(20,32,58,.25);font-family:'Barlow Condensed', 'Arial Narrow', sans-serif}.ds-feuillet-mois{background:#c8321c;color:#fff;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.025em;padding:2px 0}.ds-feuillet-jour{font-weight:700;font-size:32px;line-height:36px;color:#14203a}.ds-feuillet-an{font-weight:600;font-size:11px;color:#5f6a84;padding-bottom:4px}"
+    },
+    {
+      "name": "Panneau",
+      "kind": "card",
+      "refersTo": "panneau",
+      "description": "Zone de travail du tableau de bord, bordée, sans ombre.",
+      "html": "<section class=\"ds-panneau\"><h2>Prochaines échéances</h2><p>Solvabilité II : application de la révision</p></section>",
+      "css": ".ds-panneau{background:#fff;border:1px solid #dce1eb;border-radius:12px;font:14px system-ui,sans-serif;color:#14203a;width:320px}.ds-panneau h2{margin:0;padding:12px 16px;font-size:16px;font-weight:600;border-bottom:1px solid #dce1eb}.ds-panneau p{margin:0;padding:12px 16px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "L'éphéméride de bureau",
+    "overview": "Le site se lit comme on arrache la feuille du jour : la date d'abord, puis ce qui est tombé, ce qui arrive et ce qui attend une action. Le monde de l'éphéméride ne prête que quatre choses à un écran de travail : un papier froid bleuté, une encre bleu nuit, une grotesque condensée pour les chiffres et une signature, le feuillet daté. La mise en page, la navigation et les contrôles restent ceux d'un produit web ordinaire.",
+    "keyCharacteristics": [
+      "Bandeau de navigation bleu de Prusse plein, onglet actif souligné de vermillon.",
+      "Toute date d'échéance est un feuillet : bandeau du mois, grand quantième condensé.",
+      "Vermillon réservé aux dates à venir, à l'urgence et à ce qui demande une action.",
+      "Chiffres en Barlow Condensed auto-hébergée, texte en police système.",
+      "Couleurs de piliers et de réglementations (reprises de Notion) traitées comme séries de données."
+    ],
+    "rules": [
+      {
+        "name": "La règle du vermillon compté",
+        "body": "Le vermillon ne sert qu'à dater et à alerter. Un élément vermillon doit répondre à « quand ? » ou « que dois-je faire ? ».",
+        "section": "colors"
+      },
+      {
+        "name": "La règle des couleurs Notion",
+        "body": "Piliers et réglementations gardent les teintes de Notion (bleu, violet, orange, rose, ambre, émeraude, sarcelle, cyan) en étiquettes pâles : ce sont des données, pas l'identité.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle des chiffres condensés",
+        "body": "Barlow Condensed ne porte que des chiffres, des mois et le mot « Radar » : jamais une phrase.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle de la bordure seule",
+        "body": "Un panneau a une bordure ou une ombre, jamais les deux au repos.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** dater chaque échéance avec un feuillet, partout où elle apparaît.",
+      "**Do** utiliser les jetons (papier, feuille, encre, filet, prusse, vermillon, alerte) plutôt que des couleurs Tailwind brutes.",
+      "**Do** dessiner les icônes en SVG au trait de 1,75 px (`components/Icones.tsx`).",
+      "**Do** garder les chiffres en `font-chiffres` et les nombres en chiffres tabulaires."
+    ],
+    "donts": [
+      "**Don't** utiliser le vermillon pour décorer : il signifie date ou urgence.",
+      "**Don't** ajouter de surtitres en capitales espacées au-dessus des titres.",
+      "**Don't** remplacer une icône par un caractère Unicode (★, ↗, ▶).",
+      "**Don't** ajouter d'animations d'entrée aux cartes ou aux sections ; le seul mouvement est le feuillet du jour."
+    ]
+  }
+}

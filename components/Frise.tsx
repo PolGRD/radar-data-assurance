@@ -3,20 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { JalonFrise } from "@/lib/calendrier";
-import { formatDate, pilierStyle, reglementationStyle } from "@/lib/format";
+import { compteARebours, feuillet, formatDate, pilierStyle, reglementationStyle } from "@/lib/format";
+import { Feuillet } from "./Feuillet";
+import { IconeChevron, IconeExterne } from "./Icones";
 import { ImpactsParDomaine } from "./ImpactCarte";
-
-function joursEntre(de: string, a: string): number {
-  return Math.round((new Date(`${a}T12:00:00`).getTime() - new Date(`${de}T12:00:00`).getTime()) / 86_400_000);
-}
-
-function compteARebours(today: string, date: string): string {
-  const j = joursEntre(today, date);
-  if (j === 0) return "aujourd'hui";
-  const abs = Math.abs(j);
-  const duree = abs < 45 ? `${abs} jour${abs > 1 ? "s" : ""}` : abs < 730 ? `${Math.round(abs / 30.4)} mois` : `${Math.round(abs / 365)} ans`;
-  return j > 0 ? `dans ${duree}` : `il y a ${duree}`;
-}
 
 function Chip({ actif, onClick, children, className = "" }: { actif: boolean; onClick: () => void; children: React.ReactNode; className?: string }) {
   return (
@@ -24,14 +14,19 @@ function Chip({ actif, onClick, children, className = "" }: { actif: boolean; on
       type="button"
       aria-pressed={actif}
       onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
-        actif ? `border-transparent ${className} ring-2 ring-offset-1 ring-zinc-400 dark:ring-offset-zinc-950` : "border-zinc-300 text-zinc-600 hover:border-zinc-500 dark:border-zinc-700 dark:text-zinc-400"
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+        actif ? `border-transparent ${className} ring-2 ring-prusse ring-offset-1 ring-offset-paper dark:ring-ink` : "border-rule-2 bg-sheet text-ink-2 hover:border-ink-3 hover:text-ink"
       }`}
     >
       {children}
     </button>
   );
 }
+
+const STATUT_STYLE: Record<string, string> = {
+  "À vérifier": "border-vermillon/50 text-vermillon",
+  Reportée: "border-alerte/50 text-alerte",
+};
 
 function Jalon({ jalon, today, ouvert, onToggle, cote }: {
   jalon: JalonFrise; today: string; ouvert: boolean; onToggle: () => void; cote: "gauche" | "droite";
@@ -44,68 +39,63 @@ function Jalon({ jalon, today, ouvert, onToggle, cote }: {
   const idContenu = `contenu-${jalon.slug}`;
 
   return (
-    <li
-      id={jalon.slug}
-      className="reveal relative scroll-mt-24 pl-10 md:pl-0"
-    >
-      {/* Point sur l'axe */}
+    <li id={jalon.slug} className="relative scroll-mt-24 pl-10 md:pl-0">
+      {/* Repère sur l'axe, à la couleur de la réglementation */}
       <span
         aria-hidden="true"
-        className={`absolute top-5 left-4 h-3.5 w-3.5 -translate-x-1/2 rounded-full ring-4 ring-white md:left-1/2 dark:ring-zinc-950 ${style.point} ${
+        className={`absolute top-7 left-4 h-3 w-3 -translate-x-1/2 rotate-45 rounded-[2px] ring-4 ring-paper md:left-1/2 ${style.point} ${
           ouvert ? "md:hidden" : ""
         } ${passe ? "opacity-50" : ""}`}
       />
       <article
-        className={`rounded-xl border bg-white shadow-sm transition dark:bg-zinc-900 ${
+        className={`rounded-xl border bg-sheet transition-colors ${
           ouvert ? "md:w-full" : cote === "gauche" ? "md:mr-auto md:w-[calc(50%-2rem)]" : "md:ml-auto md:w-[calc(50%-2rem)]"
-        } ${
-          ouvert ? "border-zinc-400 shadow-md dark:border-zinc-600" : "border-zinc-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800"
-        } ${passe && !ouvert ? "opacity-70 hover:opacity-100" : ""}`}
+        } ${ouvert ? "border-ink-3 shadow-[0_8px_24px_-12px_rgb(20_32_58/0.35)]" : "border-rule hover:border-rule-2"}`}
       >
-        <button type="button" onClick={onToggle} aria-expanded={ouvert} aria-controls={idContenu} className="block w-full p-4 text-left">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
-            <time dateTime={date} className="font-semibold tabular-nums">{formatDate(date)}</time>
-            {jalon.dateInitiale && jalon.dateInitiale !== date && (
-              <span className="text-zinc-500">
-                au lieu du <s>{formatDate(jalon.dateInitiale)}</s>
-              </span>
-            )}
-            <span className="text-zinc-500">· {compteARebours(today, date)}</span>
-            <span className="ml-auto flex items-center gap-1.5">
-              {jalon.reglementation && <span className={`rounded-full px-2 py-0.5 font-medium ${style.pastille}`}>{jalon.reglementation}</span>}
-              {jalon.statut && jalon.statut !== "À venir" && (
-                <span className={`rounded-full border px-2 py-0.5 ${jalon.statut === "À vérifier" ? "border-red-300 text-red-700 dark:border-red-800 dark:text-red-300" : jalon.statut === "Reportée" ? "border-orange-300 text-orange-700 dark:border-orange-800 dark:text-orange-300" : "border-zinc-300 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400"}`}>
-                  {jalon.statut}
-                </span>
+        <button type="button" onClick={onToggle} aria-expanded={ouvert} aria-controls={idContenu} className="flex w-full gap-4 p-4 text-left">
+          <Feuillet date={date} taille="md" ton={passe ? "passe" : "avenir"} />
+          <span className="min-w-0 flex-1">
+            <span className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+              <span className={`font-semibold ${passe ? "text-ink-3" : "text-vermillon"}`}>{compteARebours(today, date)}</span>
+              {jalon.dateInitiale && jalon.dateInitiale !== date && (
+                <span className="text-ink-3">au lieu du <s>{formatDate(jalon.dateInitiale)}</s></span>
               )}
+              <span className="ml-auto flex items-center gap-1.5">
+                {jalon.reglementation && <span className={`rounded-full px-2 py-0.5 font-semibold ${style.pastille}`}>{jalon.reglementation}</span>}
+                {jalon.statut && jalon.statut !== "À venir" && (
+                  <span className={`rounded-full border px-2 py-0.5 font-medium ${STATUT_STYLE[jalon.statut] ?? "border-rule-2 text-ink-2"}`}>{jalon.statut}</span>
+                )}
+              </span>
             </span>
-          </div>
-          <h3 className="font-semibold leading-snug">{jalon.intitule}</h3>
-          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
-            {domaines.slice(0, 5).map((d) => (
-              <span key={d} className="rounded bg-zinc-100 px-1.5 py-0.5 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">{d}</span>
-            ))}
-            {domaines.length > 5 && <span className="text-zinc-500">+{domaines.length - 5}</span>}
-            <span className="ml-auto text-zinc-500">
-              {jalon.impacts.length ? `${jalon.impacts.length} impact${jalon.impacts.length > 1 ? "s" : ""}` : "Impacts à documenter"}
-              {aRelire > 0 && ` · ${aRelire} à relire`}
-              <span aria-hidden="true" className={`ml-2 inline-block transition-transform ${ouvert ? "rotate-180" : ""}`}>⌄</span>
+            <span className={`block font-semibold leading-snug text-pretty ${passe ? "text-ink-2" : ""}`}>{jalon.intitule}</span>
+            <span className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
+              {domaines.slice(0, 5).map((d) => (
+                <span key={d} className="rounded-[4px] bg-sheet-2 px-1.5 py-0.5 text-ink-2 ring-1 ring-inset ring-rule">{d}</span>
+              ))}
+              {domaines.length > 5 && <span className="text-ink-3">+{domaines.length - 5}</span>}
+              <span className="ml-auto inline-flex items-center gap-1 text-ink-3">
+                {jalon.impacts.length ? `${jalon.impacts.length} impact${jalon.impacts.length > 1 ? "s" : ""}` : "Impacts à documenter"}
+                {aRelire > 0 && <span className="font-semibold text-alerte">· {aRelire} à relire</span>}
+                <IconeChevron className={`ml-1 h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${ouvert ? "rotate-90" : ""}`} />
+              </span>
             </span>
-          </div>
+          </span>
         </button>
 
         {ouvert && (
-          <div id={idContenu} className="space-y-5 border-t border-zinc-200 p-4 dark:border-zinc-800">
+          <div id={idContenu} className="space-y-5 border-t border-rule p-4">
             {(jalon.impactAssurance || jalon.sourceOfficielle || jalon.piliers.length > 0) && (
               <div className="space-y-2 text-sm">
                 {jalon.piliers.length > 0 && (
                   <div className="flex flex-wrap gap-1">
-                    {jalon.piliers.map((p) => <span key={p} className={`rounded px-2 py-0.5 text-xs font-medium ${pilierStyle(p)}`}>{p}</span>)}
+                    {jalon.piliers.map((p) => <span key={p} className={`rounded-[4px] px-1.5 py-0.5 text-xs font-semibold ${pilierStyle(p)}`}>{p}</span>)}
                   </div>
                 )}
-                {jalon.impactAssurance && <p className="leading-relaxed text-zinc-700 dark:text-zinc-300">{jalon.impactAssurance}</p>}
+                {jalon.impactAssurance && <p className="max-w-[72ch] leading-relaxed text-ink-2">{jalon.impactAssurance}</p>}
                 {jalon.sourceOfficielle && (
-                  <a href={jalon.sourceOfficielle} target="_blank" rel="noopener noreferrer" className="inline-block text-sm underline">Source officielle ↗</a>
+                  <a href={jalon.sourceOfficielle} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-medium text-prusse underline dark:text-ink">
+                    Source officielle<IconeExterne className="h-3.5 w-3.5" />
+                  </a>
                 )}
               </div>
             )}
@@ -115,8 +105,8 @@ function Jalon({ jalon, today, ouvert, onToggle, cote }: {
             </div>
             {jalon.veille.length > 0 && (
               <div>
-                <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">Dans la veille</h4>
-                <ul className="list-disc space-y-1 pl-5 text-sm">
+                <h4 className="mb-1.5 text-sm font-semibold text-ink-2">Dans la veille</h4>
+                <ul className="list-disc space-y-1 pl-5 text-sm marker:text-ink-3">
                   {jalon.veille.map((v) => <li key={v.id}><Link href={`/veille/${v.id}`} className="hover:underline">{v.titre}</Link></li>)}
                 </ul>
               </div>
@@ -175,7 +165,7 @@ export function Frise({ jalons, today }: { jalons: JalonFrise[]; today: string }
       annee = a;
       lignes.push(
         <li key={`annee-${a}`} className="sticky top-2 z-10 pl-10 md:pl-0 md:text-center" aria-hidden="true">
-          <span className="inline-block rounded-full bg-zinc-900 px-3 py-1 text-sm font-bold tabular-nums text-white shadow dark:bg-zinc-100 dark:text-zinc-900">{a}</span>
+          <span className="inline-block rounded-[5px] bg-prusse px-3 py-0.5 font-chiffres text-2xl font-bold tracking-wide text-prusse-ink shadow-[0_2px_6px_-2px_rgb(20_32_58/0.4)]">{a}</span>
         </li>,
       );
     }
@@ -187,7 +177,7 @@ export function Frise({ jalons, today }: { jalons: JalonFrise[]; today: string }
 
   return (
     <div>
-      <div className="mb-8 space-y-2">
+      <div className="mb-10 space-y-2.5">
         <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrer par réglementation">
           {toutesReglementations.map((r) => (
             <Chip key={r} actif={reglementations.includes(r)} onClick={() => toggle(reglementations, setReglementations, r)} className={reglementationStyle(r).pastille}>
@@ -201,37 +191,31 @@ export function Frise({ jalons, today }: { jalons: JalonFrise[]; today: string }
             <Chip key={p} actif={piliers.includes(p)} onClick={() => toggle(piliers, setPiliers, p)} className={pilierStyle(p)}>{p}</Chip>
           ))}
           {(reglementations.length > 0 || piliers.length > 0) && (
-            <button type="button" onClick={() => { setReglementations([]); setPiliers([]); }} className="ml-1 text-xs underline">Tout afficher</button>
+            <button type="button" onClick={() => { setReglementations([]); setPiliers([]); }} className="ml-1 text-xs font-semibold text-vermillon underline">Tout afficher</button>
           )}
         </div>
       </div>
 
       {visibles.length ? (
         <ol className="relative flex flex-col gap-6">
-          <span aria-hidden="true" className="absolute top-0 bottom-0 left-4 w-0.5 -translate-x-1/2 bg-gradient-to-b from-zinc-200 via-zinc-300 to-zinc-200 md:left-1/2 dark:from-zinc-800 dark:via-zinc-700 dark:to-zinc-800" />
+          <span aria-hidden="true" className="absolute top-0 bottom-0 left-4 w-0.5 -translate-x-1/2 bg-rule-2 md:left-1/2" />
           {lignes}
         </ol>
       ) : (
-        <p className="rounded border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">Aucune échéance ne correspond.</p>
+        <p className="rounded-xl border border-dashed border-rule-2 p-8 text-center text-sm text-ink-2">Aucune échéance ne correspond.</p>
       )}
     </div>
   );
 }
 
 function Aujourdhui({ today }: { today: string }) {
+  const f = feuillet(today);
   return (
     <li id="aujourdhui" className="relative scroll-mt-24 pl-10 md:pl-0 md:text-center">
-      {/* Sur mobile, le point est sur l'axe à gauche ; sur ordinateur, il est dans la pastille centrée sur l'axe. */}
-      <span aria-hidden="true" className="absolute top-1/2 left-4 h-3 w-3 -translate-x-1/2 -translate-y-1/2 md:hidden">
-        <span className="absolute inset-0 rounded-full bg-emerald-500 motion-safe:animate-ping" />
-        <span className="absolute inset-0 rounded-full bg-emerald-500" />
-      </span>
-      <span className="relative inline-flex items-center gap-2 rounded-full border border-emerald-400 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-200">
-        <span aria-hidden="true" className="relative hidden h-2 w-2 md:inline-block">
-          <span className="absolute inset-0 rounded-full bg-emerald-500 motion-safe:animate-ping" />
-          <span className="absolute inset-0 rounded-full bg-emerald-500" />
-        </span>
-        Aujourd&apos;hui · {formatDate(today)}
+      <span aria-hidden="true" className="absolute top-1/2 left-4 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-vermillon ring-4 ring-paper md:hidden" />
+      <span className="feuillet-pose relative inline-flex items-baseline gap-2 rounded-[5px] bg-vermillon px-3.5 py-1.5 text-vermillon-ink">
+        <span className="font-chiffres text-lg font-bold uppercase tracking-wide">Aujourd&apos;hui</span>
+        <span className="text-sm font-medium">{f ? `${f.jourSemaine} ${f.quantieme} ${f.moisLong} ${f.annee}` : formatDate(today)}</span>
       </span>
     </li>
   );

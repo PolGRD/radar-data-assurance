@@ -44,3 +44,8 @@ next-env.d.ts
 # python
 __pycache__/
 .pytest_cache/
+
+# Impeccable : captures et décisions locales
+/.impeccable/review/
+/.impeccable/questions/
+/.impeccable/config.local.json

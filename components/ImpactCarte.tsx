@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ImpactLie } from "@/lib/calendrier";
+import { IconeChevron } from "./Icones";
 import { CriticiteBadge, NatureBadge, StatutRelecture } from "./RegleBadges";
 
 const EFFORT_STYLE: Record<string, string> = {
-  Faible: "text-emerald-700 dark:text-emerald-400",
-  Moyen: "text-amber-700 dark:text-amber-400",
-  Fort: "text-red-700 dark:text-red-400",
+  Faible: "text-ink-2",
+  Moyen: "text-alerte",
+  Fort: "text-vermillon",
 };
 
 const TYPE_STYLE: Record<string, string> = {
@@ -18,51 +19,51 @@ const TYPE_STYLE: Record<string, string> = {
 };
 
 export function TypeImpact({ type }: { type: string }) {
-  return <span className={`rounded px-1.5 py-0.5 font-semibold ${TYPE_STYLE[type] ?? "bg-zinc-100 dark:bg-zinc-800"}`}>{type}</span>;
+  return <span className={`rounded-[4px] px-1.5 py-0.5 font-semibold ${TYPE_STYLE[type] ?? "bg-sheet-2 text-ink-2"}`}>{type}</span>;
 }
 
 export function Impact({ impact }: { impact: ImpactLie }) {
   const [ouvert, setOuvert] = useState(false);
   const idContenu = `impact-${impact.id}`;
   return (
-    <li className="rounded-md border border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+    <li className={`rounded-lg border bg-sheet-2 transition-colors ${ouvert ? "border-rule-2" : "border-rule hover:border-rule-2"}`}>
       <button
         type="button"
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
         aria-controls={idContenu}
-        className="flex w-full flex-wrap items-start gap-x-2 gap-y-1 px-3 py-2 text-left"
+        className="flex w-full flex-wrap items-start gap-x-2 gap-y-1 px-3 py-2.5 text-left"
       >
-        <span aria-hidden="true" className={`mt-0.5 text-xs transition-transform ${ouvert ? "rotate-90" : ""}`}>▶</span>
+        <IconeChevron className={`mt-0.5 h-4 w-4 shrink-0 text-ink-3 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${ouvert ? "rotate-90" : ""}`} />
         <span className="min-w-0 flex-1 text-sm font-medium leading-snug">{impact.intitule}</span>
-        <span className="flex w-full flex-wrap items-center gap-1.5 pl-5 text-[11px] sm:w-auto sm:justify-end sm:pl-0">
+        <span className="flex w-full flex-wrap items-center gap-1.5 pl-6 text-[11px] sm:w-auto sm:justify-end sm:pl-0">
           {impact.types.map((t) => <TypeImpact key={t} type={t} />)}
           <StatutRelecture statut={impact.statut} />
           {impact.effort && <span className={`font-semibold ${EFFORT_STYLE[impact.effort] ?? ""}`}>Effort {impact.effort.toLowerCase()}</span>}
           {impact.regles.length > 0 && (
-            <span className="rounded bg-zinc-200 px-1.5 py-0.5 dark:bg-zinc-800">{impact.regles.length} règle{impact.regles.length > 1 ? "s" : ""}</span>
+            <span className="rounded-[4px] bg-sheet px-1.5 py-0.5 font-medium text-ink-2 ring-1 ring-inset ring-rule">{impact.regles.length} règle{impact.regles.length > 1 ? "s" : ""}</span>
           )}
         </span>
       </button>
       {ouvert && (
-        <div id={idContenu} className="space-y-3 border-t border-zinc-200 px-3 py-3 text-sm dark:border-zinc-800">
-          {impact.description && <p className="leading-relaxed text-zinc-700 dark:text-zinc-300">{impact.description}</p>}
+        <div id={idContenu} className="space-y-3 border-t border-rule px-3 py-3 text-sm">
+          {impact.description && <p className="max-w-[72ch] leading-relaxed text-ink-2">{impact.description}</p>}
           <dl className="grid gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_1fr]">
-            {impact.fonctions.length > 0 && (<><dt className="text-zinc-500">Fonctions</dt><dd>{impact.fonctions.join(", ")}</dd></>)}
-            {impact.branches.length > 0 && (<><dt className="text-zinc-500">Branches</dt><dd>{impact.branches.join(", ")}</dd></>)}
-            {impact.domaines.length > 1 && (<><dt className="text-zinc-500">Domaines data</dt><dd>{impact.domaines.join(", ")}</dd></>)}
+            {impact.fonctions.length > 0 && (<><dt className="text-ink-3">Fonctions</dt><dd>{impact.fonctions.join(", ")}</dd></>)}
+            {impact.branches.length > 0 && (<><dt className="text-ink-3">Branches</dt><dd>{impact.branches.join(", ")}</dd></>)}
+            {impact.domaines.length > 1 && (<><dt className="text-ink-3">Domaines data</dt><dd>{impact.domaines.join(", ")}</dd></>)}
           </dl>
           {impact.regles.length > 0 && (
             <div>
-              <h5 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">Règles de gestion concernées</h5>
+              <h5 className="mb-1.5 text-xs font-semibold text-ink-2">Règles de gestion concernées</h5>
               <ul className="space-y-1.5">
                 {impact.regles.map((r) => (
-                  <li key={r.id} className="rounded border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-950">
+                  <li key={r.id} className="rounded-md border border-rule bg-sheet p-2.5">
                     <div className="flex items-start gap-2">
                       <span className="flex shrink-0 gap-1 pt-0.5"><NatureBadge nature={r.nature} /><CriticiteBadge criticite={r.criticite} /></span>
                       <Link href={`/regles#regle-${r.id}`} className="text-sm hover:underline">{r.regle}</Link>
                     </div>
-                    {r.controle && <p className="mt-1 break-words font-mono text-xs text-zinc-600 dark:text-zinc-400">{r.controle}</p>}
+                    {r.controle && <p className="mt-1 break-words font-mono text-xs text-ink-2">{r.controle}</p>}
                   </li>
                 ))}
               </ul>
@@ -89,13 +90,13 @@ export function ImpactsParDomaine({ impacts, vide }: { impacts: ImpactLie[]; vid
   }, [impacts]);
 
   if (!impacts.length) {
-    return <p className="text-sm text-zinc-500">{vide}</p>;
+    return <p className="text-sm text-ink-3">{vide}</p>;
   }
   return (
     <div className="space-y-4">
       {groupes.map(([domaine, liste]) => (
         <section key={domaine}>
-          <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">{domaine}</h4>
+          <h4 className="mb-1.5 text-xs font-semibold text-ink-3">{domaine}</h4>
           <ul className="space-y-2">{liste.map((i) => <Impact key={i.id} impact={i} />)}</ul>
         </section>
       ))}

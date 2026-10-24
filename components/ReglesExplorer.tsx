@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { CRITERES_REGLES, filtrerRegles } from "@/lib/filtres";
 import type { Regle } from "@/lib/types";
+import { IconeSuite } from "./Icones";
 import { CriticiteBadge, NatureBadge } from "./RegleBadges";
 
 export type RegleVue = Regle & { citations: { impact: string; echeances: { slug: string; intitule: string }[] }[] };
@@ -22,8 +23,8 @@ function Select({ id, label, value, onChange, choix, tous = "Tous" }: {
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{label}</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900">
+      <label htmlFor={id} className="text-xs font-semibold text-ink-2">{label}</label>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="champ">
         <option value="">{tous}</option>
         {choix.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -92,7 +93,7 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 rounded-xl border border-rule bg-sheet p-4 sm:grid-cols-5">
         <Select id="r-branche" label="Branche" value={get("branche")} onChange={(v) => update({ branche: v })} choix={choix.branches} tous="Toutes" />
         <Select id="r-domaine" label="Domaine de gestion" value={get("domaine")} onChange={(v) => update({ domaine: v })} choix={choix.domaines} />
         <Select id="r-nature" label="Nature" value={get("nature")} onChange={(v) => update({ nature: v })} choix={choix.natures} tous="Toutes" />
@@ -104,43 +105,43 @@ export function ReglesExplorer({ regles }: { regles: RegleVue[] }) {
         <input
           id="r-recherche" type="search" value={query} onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher dans les règles, contrôles, références juridiques…"
-          className="w-full flex-1 rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className="champ w-full flex-1 py-2"
         />
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm font-medium">
           <input type="checkbox" checked={Boolean(get("citee"))} onChange={(e) => update({ citee: e.target.checked ? "1" : "" })} />
           Citées par un impact
         </label>
         {actifs > 0 && (
-          <button type="button" onClick={() => { setQuery(""); router.replace(pathname, { scroll: false }); }} className="text-sm underline">Effacer</button>
+          <button type="button" onClick={() => { setQuery(""); router.replace(pathname, { scroll: false }); }} className="text-sm font-medium text-vermillon underline">Effacer</button>
         )}
       </div>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400" aria-live="polite">{resultats.length} règle{resultats.length > 1 ? "s" : ""}</p>
+      <p className="text-sm text-ink-2" aria-live="polite">{resultats.length} règle{resultats.length > 1 ? "s" : ""}</p>
 
       {groupes.map(([domaine, liste]) => (
         <section key={domaine || "resultats"}>
-          {domaine && <h2 className="sticky top-0 z-10 mb-2 bg-[var(--background)] py-1 font-semibold">{domaine} <span className="text-sm font-normal text-zinc-500">({liste.length})</span></h2>}
+          {domaine && <h2 className="sticky top-0 z-10 mb-2 flex items-baseline gap-2 border-b border-rule bg-paper py-2 font-semibold">{domaine} <span className="font-chiffres text-lg font-semibold text-ink-3">{liste.length}</span></h2>}
           <ul className="space-y-2">
             {liste.map((r) => (
               <li
                 key={r.id}
                 id={`regle-${r.id}`}
-                className={`scroll-mt-24 rounded-lg border bg-white p-3 dark:bg-zinc-900 ${surlignee === `regle-${r.id}` ? "border-amber-400 ring-2 ring-amber-300 dark:border-amber-600 dark:ring-amber-700" : "border-zinc-200 dark:border-zinc-800"}`}
+                className={`scroll-mt-24 rounded-lg border bg-sheet p-3 ${surlignee === `regle-${r.id}` ? "border-vermillon ring-2 ring-vermillon/40" : "border-rule"}`}
               >
                 <div className="flex items-start gap-2">
                   <span className="flex shrink-0 gap-1 pt-0.5"><NatureBadge nature={r.nature} /><CriticiteBadge criticite={r.criticite} /></span>
                   <p className="flex-1 text-sm font-medium leading-snug">{r.regle}</p>
-                  {r.statut && r.statut !== "Proposée" && <span className="shrink-0 text-xs text-zinc-500">{r.statut}</span>}
+                  {r.statut && r.statut !== "Proposée" && <span className="shrink-0 text-xs text-ink-3">{r.statut}</span>}
                 </div>
-                {r.controle && <p className="mt-1.5 break-words font-mono text-xs text-zinc-600 dark:text-zinc-400">{r.controle}</p>}
+                {r.controle && <p className="mt-1.5 break-words font-mono text-xs text-ink-2">{r.controle}</p>}
                 {(r.branches.length > 0 || r.referenceJuridique || r.citations.length > 0) && (
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
                     {r.branches.length > 0 && <span className="font-medium">{r.branches.join(" · ")}</span>}
                     {r.referenceJuridique && <span>{r.referenceJuridique}</span>}
                     {r.citations.map((c) => (
                       <span key={c.impact}>
                         Impact : {c.impact}
                         {c.echeances.map((e) => (
-                          <Link key={e.slug} href={`/calendrier#${e.slug}`} className="ml-1 underline">→ {e.intitule}</Link>
+                          <Link key={e.slug} href={`/calendrier#${e.slug}`} className="ml-1 inline-flex items-center gap-0.5 font-medium text-prusse underline dark:text-ink"><IconeSuite className="h-3 w-3" />{e.intitule}</Link>
                         ))}
                       </span>
                     ))}

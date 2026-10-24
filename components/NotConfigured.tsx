@@ -3,7 +3,7 @@ import { notionConfigured } from "@/lib/notion";
 export function NotConfigured() {
   if (notionConfigured()) return null;
   return (
-    <p role="alert" className="mb-6 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+    <p role="alert" className="mb-6 rounded-lg border border-alerte/40 bg-alerte-soft p-3 text-sm text-alerte">
       La variable NOTION_TOKEN n&apos;est pas définie : aucune donnée Notion ne peut être lue.
     </p>
   );

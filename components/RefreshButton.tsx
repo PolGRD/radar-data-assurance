@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { IconeRafraichir } from "./Icones";
 
 export function RefreshButton() {
   const router = useRouter();
@@ -24,9 +25,10 @@ export function RefreshButton() {
       type="button"
       onClick={refresh}
       disabled={state === "busy"}
-      className="rounded px-2 py-1 text-sm hover:bg-zinc-100 disabled:opacity-60 dark:hover:bg-zinc-800"
+      className={`flex items-center gap-1.5 rounded-[4px] px-2.5 py-1.5 text-sm transition-colors hover:bg-white/10 disabled:opacity-70 ${state === "error" ? "bg-vermillon text-vermillon-ink hover:bg-vermillon" : "text-white/80 hover:text-white"}`}
       title="Recharger les données depuis Notion"
     >
+      <IconeRafraichir className={`h-4 w-4 ${state === "busy" ? "motion-safe:animate-spin" : ""}`} />
       {state === "busy" ? "Rafraîchissement…" : state === "error" ? "Échec, réessayer" : "Rafraîchir"}
     </button>
   );

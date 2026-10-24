@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { EnTetePage } from "@/components/EnTetePage";
 import { NotConfigured } from "@/components/NotConfigured";
 import { VeilleExplorer } from "@/components/VeilleExplorer";
 import { getVeilleItems } from "@/lib/notion";
@@ -11,7 +12,7 @@ export default async function VeillePage() {
   const items = await getVeilleItems();
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Fil de veille</h1>
+      <EnTetePage titre="Fil de veille" />
       <NotConfigured />
       <Suspense>
         <VeilleExplorer items={items} />
