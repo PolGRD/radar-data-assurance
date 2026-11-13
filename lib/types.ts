@@ -21,7 +21,6 @@ export type VeilleItem = {
 export type VeilleDetail = VeilleItem & {
   notionUrl: string;
   notes: NoteBlock[];
-  fiches: { id: string; titre: string }[];
   echeances: { id: string; titre: string; date: string | null }[];
 };
 
@@ -84,30 +83,6 @@ export type Regle = {
   branches: string[];
   statut: string | null;
   impactIds: string[];
-};
-
-export type EtapeParcours = {
-  id: string;
-  competence: string;
-  pilier: string | null;
-  statut: string | null;
-  type: string | null;
-  ressource: string | null;
-  echeanceCible: string | null;
-  notes: string;
-};
-
-export type Fiche = {
-  id: string;
-  titre: string;
-  slug: string;
-  adresse: string;
-  statut: string | null;
-  piliers: string[];
-  tags: string[];
-  miseAJour: string;
-  notionUrl: string;
-  veilleIds: string[];
 };
 
 export type ArticleBlog = {

@@ -26,7 +26,6 @@ import notion as n
 VEILLE = "0e0d1142-dd37-485c-9b9a-5a81297fe05a"
 SOURCES = "bf49b3d4-9111-41db-a4da-53ff30b10dec"
 ECHEANCES = "4f13f344-aea7-4a81-aba6-f5a14b21e09b"
-PARCOURS = "d93b2f61-5c7d-4cf1-8943-012d5a2445dd"
 IMPACTS = "64eabb90-48fe-4ad4-ac2d-97b2b85b7bb5"
 
 SITE = "https://radar-data-assurance.vercel.app"
@@ -66,7 +65,6 @@ class Donnees:
     articles: list[Article]          # retenus ou lus, modifiés dans les 7 derniers jours
     a_trier: int
     echeances: list[Echeance]        # toutes les échéances datées ; le gabarit garde les 60 prochains jours
-    parcours: list[str]              # compétences « En cours »
     sources_en_erreur: list[str]
     a_analyser: list[Article]        # retenus ou lus dont l'analyse d'impact est vide ou « À faire »
     impacts_a_relire: int
@@ -129,8 +127,6 @@ def lire(api: n.Notion, maintenant: datetime) -> Donnees:
         if jour := _date(p, "Date"):
             echeances.append(Echeance(slug, intitule, jour, n.lire_select(p, "Réglementation"), n.lire_select(p, "Statut")))
 
-    parcours = [n.lire_texte(p, "Compétence") for p in api.interroger(PARCOURS, {"property": "Statut", "select": {"equals": "En cours"}})
-                if n.lire_select(p, "Statut") == "En cours"]
     sources = [n.lire_texte(p, "Nom") for p in api.interroger(SOURCES)
                if n.lire_case(p, "Active") and n.lire_nombre(p, "Erreurs consécutives") >= SEUIL_ERREURS]
     impacts = [p for p in api.interroger(IMPACTS, {"property": "Statut", "select": {"equals": "À relire"}})
@@ -140,7 +136,6 @@ def lire(api: n.Notion, maintenant: datetime) -> Donnees:
         articles=[_article(p) for p in recents],
         a_trier=sum(1 for p in veille if n.lire_select(p, "Statut") == "À trier"),
         echeances=echeances,
-        parcours=parcours,
         sources_en_erreur=sources,
         a_analyser=[a for a in map(_article, visibles) if a.analyse in ("", "À faire")],
         impacts_a_relire=len(impacts),
@@ -181,8 +176,6 @@ def composer(d: Donnees, aujourdhui: date) -> Message:
             (f"{_jour(e.date)} · {e.intitule}", f"{SITE}/calendrier#{e.slug}",
              " · ".join(x for x in (e.reglementation, e.statut if e.statut != "À venir" else "") if x))
             for e in proches]))
-    if d.parcours:
-        sections.append(("Parcours en cours", [(c, "", "") for c in d.parcours]))
 
     rappels = [(_pluriel(d.a_trier, "article", "à trier"), f"{SITE}/", "")] if d.a_trier else []
     rappels += [(f"Source en erreur depuis {SEUIL_ERREURS} jours ou plus : {s}", "", "") for s in d.sources_en_erreur]

@@ -17,7 +17,7 @@ def article(id, titre, **champs):
 
 
 def donnees(**champs):
-    base = dict(articles=[], a_trier=0, echeances=[], parcours=[], sources_en_erreur=[], a_analyser=[], impacts_a_relire=0)
+    base = dict(articles=[], a_trier=0, echeances=[], sources_en_erreur=[], a_analyser=[], impacts_a_relire=0)
     return Donnees(**{**base, **champs})
 
 
@@ -70,11 +70,12 @@ def test_echeances_des_60_prochains_jours_seulement():
 def test_rappels_a_trier_sources_en_erreur_et_a_traiter():
     m = composer(donnees(
         a_trier=12, sources_en_erreur=["L'Argus de l'assurance"], impacts_a_relire=23,
-        a_analyser=[article("m", "Mutualité française et PLFSS 2027")], parcours=["Certification DAMA CDMP"],
+        a_analyser=[article("m", "Mutualité française et PLFSS 2027")],
     ), LUNDI)
     for attendu in ("- 12 articles à trier (", "L'Argus de l'assurance", "- 23 impacts à relire (",
-                    "Mutualité française et PLFSS 2027", "Certification DAMA CDMP"):
+                    "Mutualité française et PLFSS 2027"):
         assert attendu in m.texte, attendu
+    assert "Parcours" not in m.texte  # rubrique supprimée avec la base Parcours d'apprentissage
 
 
 def test_accords_au_singulier_et_au_pluriel():
@@ -152,8 +153,6 @@ def test_lecture_de_notion():
             {"id": "e2", "properties": {"Intitulé": _titre("Sans date"), "Date": {"date": None},
                                         "Réglementation": _sel("Autre"), "Statut": _sel("À vérifier")}},
         ],
-        d.PARCOURS: [{"id": "p1", "properties": {"Compétence": _titre("DAMA CDMP"), "Statut": _sel("En cours")}},
-                     {"id": "p2", "properties": {"Compétence": _titre("AI Act"), "Statut": _sel("Fait")}}],
         d.SOURCES: [{"id": "s1", "properties": {"Nom": _titre("CNIL"), "Active": {"checkbox": True}, "Erreurs consécutives": {"number": 3}}},
                     {"id": "s2", "properties": {"Nom": _titre("ACPR"), "Active": {"checkbox": True}, "Erreurs consécutives": {"number": 1}}},
                     {"id": "s3", "properties": {"Nom": _titre("Ancienne"), "Active": {"checkbox": False}, "Erreurs consécutives": {"number": 9}}}],
@@ -164,7 +163,7 @@ def test_lecture_de_notion():
     assert lu.articles[0].pertinence == 5 and lu.articles[0].url_source == "https://exemple.fr/ijss"
     assert lu.a_trier == 1
     assert [(e.slug, e.date) for e in lu.echeances] == [("ijss-at-mp-abaissement-du-plafond", date(2026, 11, 1))]
-    assert lu.parcours == ["DAMA CDMP"]
+    assert set(api.filtres) == {d.VEILLE, d.ECHEANCES, d.SOURCES, d.IMPACTS}  # la base Parcours n'est plus lue
     assert lu.sources_en_erreur == ["CNIL"]
     assert lu.impacts_a_relire == 1
     assert [a.id for a in lu.a_analyser] == ["ancien"]  # retenu ou lu, analyse vide ou « À faire »

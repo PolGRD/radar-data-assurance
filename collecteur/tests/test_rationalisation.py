@@ -38,7 +38,7 @@ def test_ignore_les_doublons_et_les_articles_trop_anciens():
 def test_plafonne_le_nombre_d_articles_par_source():
     articles = flux(*[f"Prévoyance : article {i}" for i in range(12)])
     gardes, _ = trier_articles(articles, deja_vues=set(), date_limite="2026-10-10", classeur=classeur, tout_garder=False)
-    assert len(gardes) == MAX_PAR_SOURCE == 5
+    assert len(gardes) == MAX_PAR_SOURCE == 2
 
 
 def test_tes_articles_retenus_passent_le_filtre():

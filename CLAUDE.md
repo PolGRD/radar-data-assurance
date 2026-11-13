@@ -29,7 +29,7 @@ Tous les secrets vont en variables d'environnement : Vercel pour le site, GitHub
 
 ## Découpage
 - Lots 0, 1 et 2 : faits.
-- Lot 3 : fait (frise, impacts assureur, règles de gestion, fiches, parcours).
+- Lot 3 : fait (frise, impacts assureur, règles de gestion). Fiches de synthèse et parcours d'apprentissage livrés puis retirés le 13/11/2026 (non utilisés, place dans Notion).
 - Lot 4 : digest e-mail.
 - Lot 5 : phase 2, blog public : fait (blog, relecture privée, À propos, mentions légales, RSS, sitemap).
 
