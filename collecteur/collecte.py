@@ -27,7 +27,7 @@ VEILLE = "0e0d1142-dd37-485c-9b9a-5a81297fe05a"
 SOURCES = "bf49b3d4-9111-41db-a4da-53ff30b10dec"
 
 AGE_MAX_JOURS = 7       # on ignore les articles plus anciens (évite d'inonder « À trier »)
-MAX_PAR_SOURCE = 5      # plafond d'articles créés par source et par passage
+MAX_PAR_SOURCE = 2      # plafond d'articles créés par source et par passage
 PEREMPTION_A_TRIER = 3   # jours après la collecte, pour un article jamais trié
 PEREMPTION_ECARTE = 30   # jours après la dernière modification, pour un article écarté
 

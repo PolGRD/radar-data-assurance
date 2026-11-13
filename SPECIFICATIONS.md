@@ -259,3 +259,4 @@ Relations bidirectionnelles : Veille ↔ Sources, Veille ↔ Fiches, Veille ↔ 
 - Sources (§6) et tags (§5) validés en l'état, révisables à tout moment dans Notion.
 - Pré-classement par mots-clés (F4) conservé. Il se désactive d'une ligne s'il gêne.
 - Aucun usage commercial, aucune mention d'activité freelance.
+- 13/11/2026 : fiches de synthèse (F9) et parcours d'apprentissage (F11) retirés du site, du digest et de Notion, faute d'usage et pour libérer de la place dans Notion gratuit. La base Veille ne garde que les articles retenus ; le collecteur passe à 2 articles par source et par jour.

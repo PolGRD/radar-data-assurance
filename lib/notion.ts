@@ -11,8 +11,8 @@ import {
 } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
 import { DATA_SOURCES, NOTION_CACHE_TAG, REVALIDATE_SECONDS, STATUTS_VISIBLES } from "./config";
-import type { ArticleBlog, Echeance, EtapeParcours, Fiche, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
-import { avecAdresses } from "./fiches";
+import type { ArticleBlog, Echeance, ImpactData, NoteBlock, Regle, RichText, VeilleDetail, VeilleItem } from "./types";
+import { avecAdresses } from "./adresses";
 import { slugify } from "./format";
 
 // ---------- Client ----------
@@ -207,21 +207,19 @@ export const getVeilleDetail = cached(async (id: string): Promise<VeilleDetail |
   if (!isVisible(item)) return null;
 
   const p = page.properties;
-  const [notes, fiches, echeances] = await Promise.all([
+  const [notes, echeances] = await Promise.all([
     getBlocks(page.id),
-    Promise.all(relation(p, "Fiches liées").map(pageTitle)),
     Promise.all(relation(p, "Échéance liée").map(pageTitle)),
   ]);
   return {
     ...item,
     notionUrl: page.url,
     notes,
-    fiches: fiches.filter((f) => f !== null).map(({ id, titre }) => ({ id, titre })),
     echeances: echeances.filter((e) => e !== null),
   };
-}, "veille-detail-v2");
+}, "veille-detail-v3"); // v3 : sans les fiches liées
 
-// ---------- Tableau de bord : échéances, parcours, fiches ----------
+// ---------- Échéances, impacts et règles ----------
 
 export const getEcheances = cached(async (): Promise<Echeance[]> => {
   if (!notionConfigured()) return [];
@@ -311,54 +309,7 @@ export const getRegles = cached(async (): Promise<Regle[] | null> => {
   });
 }, "regles");
 
-export const getParcours = cached(async (): Promise<EtapeParcours[]> => {
-  if (!notionConfigured()) return [];
-  const pages = await queryAll({ data_source_id: DATA_SOURCES.parcours });
-  return pages.map((page) => {
-    const p = page.properties;
-    return {
-      id: page.id,
-      competence: title(p) || "Sans titre",
-      pilier: select(p, "Pilier"),
-      statut: select(p, "Statut"),
-      type: select(p, "Type"),
-      ressource: url(p, "Ressource"),
-      echeanceCible: date(p, "Échéance cible"),
-      notes: text(p, "Notes"),
-    };
-  });
-}, "parcours-v2"); // v2 : type, ressource, échéance cible et notes
-
-// ---------- Fiches de synthèse ----------
-
-// Fiches titrées, de la plus récemment modifiée à la plus ancienne ; une ligne sans titre est ignorée.
-export const getFiches = cached(async (): Promise<Fiche[]> => {
-  if (!notionConfigured()) return [];
-  const pages = await queryAll({
-    data_source_id: DATA_SOURCES.fiches,
-    sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
-  });
-  return avecAdresses(
-    pages
-      .map((page) => {
-        const p = page.properties;
-        return {
-          id: page.id,
-          titre: title(p),
-          slug: text(p, "Slug"),
-          statut: select(p, "Statut"),
-          piliers: multi(p, "Piliers"),
-          tags: multi(p, "Tags"),
-          miseAJour: page.last_edited_time,
-          notionUrl: page.url,
-          veilleIds: relation(p, "Éléments de veille"),
-        };
-      })
-      .filter((f) => f.titre),
-  );
-}, "fiches-v2"); // v2 : adresse, piliers, tags et veille liée
-
-// Corps d'une page Notion (fiche, article, À propos) ; vide si la page n'est pas partagée avec l'intégration.
+// Corps d'une page Notion (article, À propos) ; vide si la page n'est pas partagée avec l'intégration.
 export const getContenuPage = cached(async (id: string): Promise<NoteBlock[]> => {
   if (!notionConfigured()) return [];
   try {

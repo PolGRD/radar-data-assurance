@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { Badge, Favori, Pertinence, PilierBadge } from "@/components/Badge";
 import { Feuillet } from "@/components/Feuillet";
-import { BarreProgression } from "@/components/BarreProgression";
 import { IconeSuite } from "@/components/Icones";
 import { NotConfigured } from "@/components/NotConfigured";
 import { PILIERS } from "@/lib/config";
-import { compteARebours, daysAgo, ecart, formatDate, referenceDate } from "@/lib/format";
-import { countATrier, getFiches, getEcheances, getImpacts, getParcours, getVeilleItems } from "@/lib/notion";
-import { progression, tableauParcours } from "@/lib/parcours";
+import { compteARebours, daysAgo, ecart, referenceDate } from "@/lib/format";
+import { countATrier, getEcheances, getImpacts, getVeilleItems } from "@/lib/notion";
 import type { VeilleItem } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -74,8 +72,8 @@ function ATraiter({ nombre, label, detail, href, urgent }: {
 }
 
 export default async function TableauDeBord() {
-  const [items, aTrier, echeances, parcours, fiches, impacts] = await Promise.all([
-    getVeilleItems(), countATrier(), getEcheances(), getParcours(), getFiches(), getImpacts(),
+  const [items, aTrier, echeances, impacts] = await Promise.all([
+    getVeilleItems(), countATrier(), getEcheances(), getImpacts(),
   ]);
 
   const weekStart = daysAgo(7).getTime();
@@ -96,7 +94,6 @@ export default async function TableauDeBord() {
   const aRelire = (impacts ?? []).filter((i) => i.statut === "À relire").length;
   const favoris = items.filter((i) => i.favori).length;
 
-  const { faits, enCours } = progression(parcours);
 
   return (
     <div className="space-y-8">
@@ -185,37 +182,11 @@ export default async function TableauDeBord() {
         </Panel>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Panel title="Favoris et pertinence 5" className="lg:col-span-1">
-          {aLaUne.length ? (
-            <ul className="divide-y divide-rule">{aLaUne.map((i) => <ItemLine key={i.id} item={i} />)}</ul>
-          ) : <Empty>Aucun favori ni élément de pertinence 5 pour l&apos;instant.</Empty>}
-        </Panel>
-
-        <Panel title="Progression du parcours" action={<LienSuite href="/parcours">Le parcours</LienSuite>}>
-          {parcours.length ? (
-            <div className="space-y-3">
-              <p className="text-sm text-ink-2">
-                {faits} fait{faits > 1 ? "s" : ""}, {enCours} en cours, sur {parcours.length} compétences.
-              </p>
-              {tableauParcours(parcours).map((ligne) => <BarreProgression key={ligne.pilier} ligne={ligne} />)}
-            </div>
-          ) : <Empty>Parcours vide.</Empty>}
-        </Panel>
-
-        <Panel title="Dernières fiches modifiées" action={<LienSuite href="/fiches">Toutes</LienSuite>}>
-          {fiches.length ? (
-            <ul className="divide-y divide-rule">
-              {fiches.slice(0, 5).map((f) => (
-                <li key={f.id} className="flex items-start justify-between gap-3 py-2 text-sm">
-                  <Link href={`/fiches/${f.adresse}`} className="hover:underline">{f.titre}</Link>
-                  <span className="shrink-0 text-ink-3">{f.statut ? `${f.statut} · ` : ""}{formatDate(f.miseAJour)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : <Empty>Aucune fiche pour l&apos;instant.</Empty>}
-        </Panel>
-      </div>
+      <Panel title="Favoris et pertinence 5">
+        {aLaUne.length ? (
+          <ul className="divide-y divide-rule">{aLaUne.map((i) => <ItemLine key={i.id} item={i} />)}</ul>
+        ) : <Empty>Aucun favori ni élément de pertinence 5 pour l&apos;instant.</Empty>}
+      </Panel>
     </div>
   );
 }

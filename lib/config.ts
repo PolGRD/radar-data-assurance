@@ -2,9 +2,7 @@
 export const DATA_SOURCES = {
   veille: "0e0d1142-dd37-485c-9b9a-5a81297fe05a",
   sources: "bf49b3d4-9111-41db-a4da-53ff30b10dec",
-  fiches: "795a44e4-0363-4b82-8698-dae7a446211c",
   echeances: "4f13f344-aea7-4a81-aba6-f5a14b21e09b",
-  parcours: "d93b2f61-5c7d-4cf1-8943-012d5a2445dd",
   impacts: "64eabb90-48fe-4ad4-ac2d-97b2b85b7bb5",
   regles: "a2a82ac9-b5cc-4c91-948b-16279dde5ee4",
   articles: "df8e3e65-e829-49d7-bb7e-150fbafcb3dd",
