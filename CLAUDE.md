@@ -1,6 +1,6 @@
 # Radar Data Assurance
 
-Blog de veille personnel de Paul Girardeau : data gouvernance × IA × assurance de personnes (prévoyance et santé, collectives et individuelles). La spécification complète et validée est dans `SPECIFICATIONS.md` (v1.0). La lire avant toute tâche.
+Blog de veille personnel de Paul Girardeau : data gouvernance × IA × assurance de personnes (prévoyance et santé, collectives et individuelles). La spécification complète et validée est dans `SPECIFICATIONS.md` (v1.0). La lire avant toute tâche. En reprise de projet, lire aussi `docs/reprise.md` (état, tâches restantes, pièges de l'environnement).
 
 ## Utilisateur
 - Consultant data gouvernance, **non-développeur**. Il ne lit pas le code : expliquer ce qui change côté usage, et guider pas à pas toute action de sa part (comptes, variables d'environnement, clics).
