@@ -26,7 +26,7 @@ Changements récents qui ne sont pas encore reflétés partout :
 - **Mentions légales** : l'adresse de l'hébergeur (Vercel Inc., Covina) n'a pas pu être vérifiée sur vercel.com depuis l'environnement (réseau bloqué). La faire confirmer par l'utilisateur sur la politique de confidentialité de Vercel ; elle se corrige dans `app/(public)/mentions-legales/page.tsx`.
 - **Page « À propos »** : la page Notion « À propos (blog public) » existe mais est vide (identifiant dans `lib/config.ts`, `PAGE_A_PROPOS`). Tant qu'elle est vide, `/a-propos` n'existe pas. Si elle n'apparaît pas une fois remplie : la partager avec l'intégration « Radar site ».
 - **Premier article du blog** : aucun article publié. Procédure dans `README.md` (base « Articles », statut « Relecture » puis « Publié »).
-- **Place dans Notion gratuit** (limite de 1 000 blocs signalée par l'utilisateur) : vider la corbeille Notion, vérifier qu'il est seul membre de l'espace (la limite ne s'applique qu'à partir de deux membres). Prochain levier si besoin : les 194 règles de gestion.
+- **Place dans Notion gratuit** : résolu le 16/11/2026. La limite de 1 000 blocs venait d'un second membre dans l'espace (l'ancien compte professionnel de l'utilisateur) ; une fois ce membre retiré, la collecte est repartie. Si la limite réapparaît, vérifier d'abord la liste des membres (outil Notion `get-users`) avant de supprimer du contenu.
 - **Veille** : l'article « Fiscalité, utilisation des données… Mutualité française… Sécurité sociale 2027 » a son analyse d'impact à « À faire ».
 
 ## Façon de travailler établie

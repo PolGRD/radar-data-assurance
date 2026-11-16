@@ -11,6 +11,14 @@ API = os.environ.get("NOTION_API_URL", "https://api.notion.com").rstrip("/") + "
 VERSION = "2025-09-03"
 
 
+class EspacePlein(RuntimeError):
+    """L'espace Notion a atteint la limite de blocs de son forfait : plus aucune page ne peut être créée."""
+
+
+def _espace_plein(statut: int, corps: dict) -> bool:
+    return statut == 403 and corps.get("code") == "restricted_resource" and "block_limit" in (corps.get("additional_data") or {})
+
+
 class Notion:
     def __init__(self, token: str):
         self.session = requests.Session()
@@ -27,6 +35,12 @@ class Notion:
                 time.sleep(float(r.headers.get("Retry-After", 2 ** essai)))
                 continue
             if not r.ok:
+                try:
+                    corps = r.json()
+                except ValueError:
+                    corps = {}
+                if _espace_plein(r.status_code, corps):
+                    raise EspacePlein(corps.get("message", "limite de blocs atteinte"))
                 raise RuntimeError(f"Notion {methode} {chemin} : {r.status_code} {r.text[:300]}")
             time.sleep(0.35)  # l'API accepte environ 3 requêtes par seconde
             return r.json()
