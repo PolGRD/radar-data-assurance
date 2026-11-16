@@ -199,8 +199,18 @@ def main() -> int:
     api = n.Notion(token)
     sources = api.interroger(SOURCES)
     decouvrir(api, sources, args.simulation, log)
-    collecter(api, sources, args.simulation, log)
+    # La péremption passe avant la collecte : elle libère de la place dans Notion au lieu d'en prendre.
     perimer(api, args.simulation, log)
+    try:
+        collecter(api, sources, args.simulation, log)
+    except n.EspacePlein as exc:
+        log()
+        log("**Collecte interrompue : l'espace Notion a atteint sa limite de blocs gratuits.** "
+            "Plus aucun article ne peut être créé tant que de la place n'est pas libérée "
+            "(vider la corbeille de Notion, supprimer des pages inutiles). "
+            f"Message de Notion : {str(exc)[:200]}")
+        log.publier()
+        return 1
     log.publier()
     return 0
 
